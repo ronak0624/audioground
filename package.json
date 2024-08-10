@@ -10,7 +10,8 @@
     "tauri": "tauri",
     "test": "npm-run-all --parallel test:*",
     "test:rust": "(cd src-tauri && cargo test)",
-    "test:wdio": "wdio run ./wdio.conf.ts"
+    "test:wdio": "wdio run ./wdio.conf.ts",
+    "test:py": "python -m unittest discover -s python -p '*_test.py'"
   },
   "dependencies": {
     "@tauri-apps/api": "^1",
