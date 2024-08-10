@@ -18,7 +18,8 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "types": ["@wdio/mocha-framework", "node", "@wdio/globals/types"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
