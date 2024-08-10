@@ -13,7 +13,7 @@ function App() {
   }
 
   return (
-    <div className="container">
+    <main className="container">
       <h1>Welcome to Tauri!</h1>
 
       <div className="row">
@@ -46,7 +46,7 @@ function App() {
       </form>
 
       <p>{greetMsg}</p>
-    </div>
+    </main>
   );
 }
 
