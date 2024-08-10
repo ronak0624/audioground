@@ -3,5 +3,5 @@ class AudioFeatures:
     def __init__(self, paths):
         self.paths = paths
 
-    def get_features(self):
+    def get_paths(self):
         return self.paths
