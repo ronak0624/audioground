@@ -17,7 +17,7 @@ def download_models():
             if os.path.exists(f"models/{filename}"):
                 continue
             response = requests.get(link)
-            with open(f"{filename}", "wb") as f:
+            with open(f"models/{filename}", "wb") as f:
                 f.write(response.content)
 
 
