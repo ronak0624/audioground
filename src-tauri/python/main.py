@@ -7,12 +7,12 @@ import requests
 
 
 def download_models():
-    models = glob("models/*.json")
+    models = glob("manifest/*.json")
     for model in models:
         with open(f"{model}", "r") as f:
-            model = json.load(f)
-            link = model["link"]
-            filename = link.split("/")[-1]
+            manifest = json.load(f)
+            link = manifest["link"]
+            filename = os.path.basename(link)
 
             if os.path.exists(f"models/{filename}"):
                 continue
