@@ -3,9 +3,7 @@ import reactLogo from "./assets/react.svg";
 import useTagRunner from "./lib/hooks/useTagRunner";
 
 export default function Interface() {
-  const [name, setName] = useState(
-    "/home/ronak/projects/audioground-priv/gui/src-tauri/mocks/test.mp3",
-  );
+  const [name, setName] = useState("");
 
   const { start, status, stdout } = useTagRunner();
 
