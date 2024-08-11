@@ -8,4 +8,5 @@ if __name__ == "__main__":
     parser.add_argument("--paths", nargs="*", help="list of paths to audio files")
     args = parser.parse_args()
     labeler = AudioFeatures(args.paths)
-    print(labeler.get_paths(), flush=True)
+    labeler.run()
+    print("done")
