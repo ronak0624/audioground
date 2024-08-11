@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChildProcess, Command } from "@tauri-apps/api/shell";
-import useOnMount from "@lib/hooks/useOnMount";
+import useOnMount from "../hooks/useOnMount";
 import { resolveResource } from "@tauri-apps/api/path";
 
 const shell = async (cmd: string): Promise<ChildProcess> => {
@@ -30,12 +30,18 @@ export default function usePythonVenv() {
   const loading = !done && !error;
 
   useOnMount(() => {
+    if (sessionStorage.getItem("venv")) {
+      setDone(true);
+      return;
+    }
     createVenv()
       .then(() => {
         console.log("dependencies installed");
         setDone(true);
+        sessionStorage.setItem("venv", "true");
       })
       .catch((e) => {
+        sessionStorage.removeItem("venv");
         setError(e);
       });
   });

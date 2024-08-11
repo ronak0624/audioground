@@ -1,15 +1,18 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/tauri";
+import useTagRunner from "./lib/hooks/useTagRunner";
 
 export default function Interface() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [name, setName] = useState(
+    "/home/ronak/projects/audioground-priv/gui/src-tauri/mocks/test.mp3",
+  );
+
+  const { start, status, stdout } = useTagRunner();
 
   async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke("greet", { name }));
+    start([name]);
   }
+
   return (
     <main className="container">
       <h1>Welcome to Tauri!</h1>
@@ -26,7 +29,7 @@ export default function Interface() {
         </a>
       </div>
 
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      <p>{status}</p>
 
       <form
         className="row"
@@ -37,13 +40,14 @@ export default function Interface() {
       >
         <input
           id="greet-input"
+          value={name}
           onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
+          placeholder="Enter a filepath..."
         />
-        <button type="submit">Greet</button>
+        <button type="submit">Start</button>
       </form>
 
-      <p>{greetMsg}</p>
+      <p>{stdout}</p>
     </main>
   );
 }
