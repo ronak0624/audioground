@@ -8,11 +8,13 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "test": "npm-run-all --parallel test:*",
-    "test:rust": "(cd src-tauri && cargo test)",
-    "test:wdio": "wdio run ./wdio.conf.ts",
-    "test:py": "python -m unittest discover -s src-tauri/python -p '*_test.py'",
-    "prepare": "husky"
+    "test": "run-script-os",
+    "test:darwin": "npm-run-all --parallel test:default:*",
+    "test:linux:win32:wdio": "wdio run ./wdio.conf.ts",
+    "test:default:rust": "(cd src-tauri && cargo test)",
+    "test:default:py": "python -m unittest discover -s src-tauri/python -p '*_test.py'",
+    "prepare": "husky",
+    "download:models": "(cd src-tauri/python && python -c 'from labeler import download_defaults; download_defaults()')"
   },
   "dependencies": {
     "@tauri-apps/api": "^1",
@@ -39,6 +41,7 @@
     "postcss": "^8.4.41",
     "prettier": "^3.3.3",
     "react": "^18.3.1",
+    "run-script-os": "^1.1.6",
     "tailwindcss": "^3.4.9",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
