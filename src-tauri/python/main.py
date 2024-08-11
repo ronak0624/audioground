@@ -1,30 +1,11 @@
 import argparse
-from labeler import AudioFeatures
-import os
-import json
-from glob import glob
-import requests
-
-
-def download_models():
-    models = glob("manifest/*.json")
-    for model in models:
-        with open(f"{model}", "r") as f:
-            manifest = json.load(f)
-            link = manifest["link"]
-            filename = os.path.basename(link)
-
-            if os.path.exists(f"models/{filename}"):
-                continue
-            response = requests.get(link)
-            with open(f"models/{filename}", "wb") as f:
-                f.write(response.content)
+from labeler import AudioFeatures, download_defaults
 
 
 if __name__ == "__main__":
-    download_models()
+    download_defaults()
     parser = argparse.ArgumentParser(description="Tag audio files.")
     parser.add_argument("--paths", nargs="*", help="list of paths to audio files")
     args = parser.parse_args()
     labeler = AudioFeatures(args.paths)
-    print(labeler.get_paths())
+    print(labeler.get_paths(), flush=True)
