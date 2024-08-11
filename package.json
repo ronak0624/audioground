@@ -11,7 +11,8 @@
     "test": "npm-run-all --parallel test:*",
     "test:rust": "(cd src-tauri && cargo test)",
     "test:wdio": "wdio run ./wdio.conf.ts",
-    "test:py": "python -m unittest discover -s python -p '*_test.py'"
+    "test:py": "python -m unittest discover -s python -p '*_test.py'",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tauri-apps/api": "^1",
@@ -32,12 +33,20 @@
     "@wdio/mocha-framework": "^8.40.2",
     "@wdio/spec-reporter": "^8.39.0",
     "autoprefixer": "^10.4.20",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.8",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.41",
+    "prettier": "^3.3.3",
     "react": "^18.3.1",
     "tailwindcss": "^3.4.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.0.2",
     "vite": "^5.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write"
+    ]
   }
 }
