@@ -15,9 +15,34 @@
       "fs": {
         "scope": ["$RESOURCE/*"]
       },
+      "path": {
+        "all": true
+      },
       "shell": {
-        "all": false,
-        "open": true
+        "execute": true,
+        "sidecar": true,
+        "scope": [
+          {
+            "name": "python3",
+            "cmd": "python3",
+            "args": true
+          },
+          {
+            "name": "python",
+            "cmd": ".venv/bin/python",
+            "args": true
+          },
+          {
+            "name": "pip",
+            "cmd": ".venv/bin/pip",
+            "args": true
+          },
+          {
+            "name": "sh",
+            "cmd": "sh",
+            "args": true
+          }
+        ]
       }
     },
     "windows": [
@@ -33,7 +58,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "resources": ["python/*.py", "python/models/*.json"],
+      "resources": ["python/*.*", "python/models/*.json"],
       "identifier": "com.audioground.dev",
       "icon": [
         "icons/32x32.png",

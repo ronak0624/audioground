@@ -19,7 +19,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["@wdio/mocha-framework", "node", "@wdio/globals/types"]
+    "baseUrl": ".",
+    "types": ["@wdio/mocha-framework", "node", "@wdio/globals/types"],
+    "paths": { "@lib/*": ["src/lib/*"] }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
