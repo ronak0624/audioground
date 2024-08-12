@@ -12,11 +12,32 @@
   "tauri": {
     "allowlist": {
       "all": false,
-      "fs": {
-        "scope": ["$RESOURCE/*"]
+      "dialog": {
+        "all": false,
+        "confirm": true,
+        "open": true,
+        "save": true
+      },
+      "window": {
+        "all": true
       },
       "path": {
         "all": true
+      },
+      "http": {
+        "all": false,
+        "request": true,
+        "scope": ["http://127.0.0.1:8012/*"]
+      },
+      "fs": {
+        "all": false,
+        "writeFile": true,
+        "scope": ["$RESOURCE/*"]
+      },
+      "protocol": {
+        "all": true,
+        "asset": true,
+        "assetScope": ["**"]
       },
       "shell": {
         "execute": true,

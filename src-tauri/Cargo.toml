@@ -11,9 +11,14 @@ edition = "2021"
 tauri-build = { version = "1", features = [] }
 
 [dependencies]
-tauri = { version = "1", features = [ "path-all", "shell-sidecar", "shell-execute"] }
+tauri = { version = "1", features = [ "dialog-save", "http-request", "fs-write-file", "dialog-confirm", "protocol-all", "window-all", "dialog-open", "path-all", "shell-sidecar", "shell-execute"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+glob = "0.3.1"
+window-vibrancy = "0.4.0"
+tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
+audiotags = "0.5.0"
+fix-path-env = { git = "https://github.com/tauri-apps/fix-path-env-rs" }
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!

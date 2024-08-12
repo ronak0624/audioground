@@ -1,4 +1,4 @@
-/* :global(:root) {
+:global(:root) {
   --layout-grid-header-height: 32px;
   --layout-grid-margin: 32px;
   --ag-row-border: 1px solid #c41717;
@@ -45,7 +45,7 @@
 }
 
 /* Required to transition background color for row hover */
-/*
+
 :global(.ag-theme-quartz .ag-row:not(.ag-row-level-1)::before),
 :global(.ag-theme-quartz-dark .ag-row:not(.ag-row-level-1)::before) {
   content: "";
@@ -135,4 +135,4 @@
 
 :global(.ag-center-cols-viewport) {
   min-height: unset !important;
-} */
+}

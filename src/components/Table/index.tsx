@@ -19,20 +19,20 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 type TableRow = Record<string, any>;
 
 export interface TableProps {
-  dark?: boolean;
   cols: ColDef[];
   theme?: string;
   rows: TableRow[];
 }
 
-export default function Table({ theme, dark, cols, rows }: TableProps) {
+export default function Table({ theme, cols, rows }: TableProps) {
   if (!theme) {
     theme = "ag-theme-quartz";
   }
-  if (dark === undefined) {
-    dark = false;
-  }
-  const tableClass = dark ? `${theme}-dark` : theme;
+  const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+
+  const tableClass = isDarkMode ? `${theme}-dark` : theme;
   const autoSizeStrategy = useMemo<SizeColumnsToFitGridStrategy>(
     () => ({
       type: "fitGridWidth",

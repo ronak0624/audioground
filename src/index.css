@@ -31,8 +31,12 @@
     --chart-5: 27 87% 67%;
   }
 
-  #root {
+  html,
+  body {
     @apply h-screen w-screen;
+  }
+  #root {
+    @apply h-full w-full;
   }
 
   .dark {

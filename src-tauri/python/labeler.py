@@ -17,7 +17,7 @@ from essentia.standard import (
 DEFAULT_MODELS = {
     "genre": "genre_discogs400-discogs-effnet-1",
     "instrument": "mtg_jamendo_instrument-discogs-effnet-1",
-    "mood": "mtg_jamendo_moodtheme-discogs-effnet-1",
+    "moods": "mtg_jamendo_moodtheme-discogs-effnet-1",
     "embeddings": "discogs-effnet-bs64-1",
 }
 
@@ -110,8 +110,8 @@ class AudioFeatures:
         return ", ".join(parsed).replace("---", ", ").split(", ")
 
     def get_mood(self, ebds):
-        mood_path = self.models["mood"].get_path()
-        mood_classes = self.models["mood"].get_classes()
+        mood_path = self.models["moods"].get_path()
+        mood_classes = self.models["moods"].get_classes()
         mood_model = TensorflowPredict2D(graphFilename=mood_path)
         predictions = mood_model(ebds)
         parsed, _ = self._parse_outputs(predictions, mood_classes, threshold=0.05)
@@ -133,10 +133,10 @@ class AudioFeatures:
             "file_extension": os.path.splitext(audiopath)[1],
             "path": audiopath,
             "key": "A",  # FIXME: use CREPE to get key
-            "bpm": 120,  # FIXME: use TempoCNN to get bpm
+            "bpm": "120",  # FIXME: use TempoCNN to get bpm
             # "key": f"{key}",
             # "bpm": tempo,
-            "genre": [],
+            "genres": [],
             "instrument": [],
             "moods": [],
         }
@@ -152,7 +152,7 @@ class AudioFeatures:
         if len(embeddings) == 0:
             entry["genres"] = ["unknown"]
             entry["moods"] = ["unknown"]
-            entry["instruments"] = ["unknown"]
+            entry["instrument"] = ["unknown"]
             return entry
 
         # predict genres
@@ -162,7 +162,7 @@ class AudioFeatures:
         entry["moods"] = self.get_mood(embeddings)
 
         # predict instruments
-        entry["instruments"] = self.get_instrument(embeddings)
+        entry["instrument"] = self.get_instrument(embeddings)
 
         res = json.dumps(entry)
         print(res, flush=True)
