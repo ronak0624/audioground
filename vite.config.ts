@@ -8,6 +8,7 @@ export default defineConfig(async () => ({
   resolve: {
     alias: [
       { find: "@lib", replacement: path.resolve(__dirname, "./src/lib/") },
+      { find: "@", replacement: path.resolve(__dirname, "./src") },
     ],
   },
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
