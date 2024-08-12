@@ -71,7 +71,10 @@
   * {
     @apply border-border;
   }
-  body {
+  .dark body {
+    @apply bg-zinc-900/75 text-foreground;
+  }
+  .light body {
     @apply bg-background text-foreground;
   }
 }
