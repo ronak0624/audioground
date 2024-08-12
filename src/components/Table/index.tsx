@@ -11,6 +11,7 @@ import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 
 import "./theme.module.css";
+import { Search } from "../Search";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -40,7 +41,8 @@ export default function Table({ theme, dark, cols, rows }: TableProps) {
   );
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col gap-2">
+      <Search />
       <div className={twMerge(tableClass, "flex-1")}>
         <AgGridReact
           columnDefs={cols}

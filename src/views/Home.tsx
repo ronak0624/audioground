@@ -9,7 +9,7 @@ export default function Home() {
   const handleClearLibrary = () => {};
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col gap-5 h-full p-5">
       <Toolbar
         isRunning={false}
         onImport={handleImport}
