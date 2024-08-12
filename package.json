@@ -28,17 +28,20 @@
     "ag-grid-react": "^32.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.427.0",
     "next-themes": "^0.3.0",
     "react-dom": "^18.2.0",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tauri-plugin-store-api": "^0.0.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
+    "@types/lodash": "^4.17.7",
     "@types/mocha": "^10.0.7",
     "@types/node": "^22.2.0",
     "@types/react": "^18.2.15",

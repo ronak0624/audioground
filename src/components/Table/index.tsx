@@ -12,6 +12,7 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 
 import "./theme.module.css";
 import { Search } from "../Search";
+import { useDarkMode } from "@lib/hooks/useDarkMode";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -19,20 +20,17 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 type TableRow = Record<string, any>;
 
 export interface TableProps {
-  dark?: boolean;
   cols: ColDef[];
   theme?: string;
   rows: TableRow[];
 }
 
-export default function Table({ theme, dark, cols, rows }: TableProps) {
+export default function Table({ theme, cols, rows }: TableProps) {
   if (!theme) {
     theme = "ag-theme-quartz";
   }
-  if (dark === undefined) {
-    dark = false;
-  }
-  const tableClass = dark ? `${theme}-dark` : theme;
+  const { isDarkMode } = useDarkMode();
+  const tableClass = isDarkMode ? `${theme}-dark` : theme;
   const autoSizeStrategy = useMemo<SizeColumnsToFitGridStrategy>(
     () => ({
       type: "fitGridWidth",
