@@ -1,9 +1,5 @@
-import { useMemo } from "react";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-import type {
-  ColDef,
-  SizeColumnsToFitGridStrategy,
-} from "@ag-grid-community/core";
+import type { ColDef } from "@ag-grid-community/core";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { twMerge } from "tailwind-merge";
 import { AgGridReact } from "@ag-grid-community/react";
@@ -24,21 +20,22 @@ export interface TableProps {
   rows: TableRow[];
 }
 
-export default function Table({ theme, cols, rows }: TableProps) {
-  if (!theme) {
-    theme = "ag-theme-quartz";
-  }
+export default function Table({
+  theme = "ag-theme-quartz",
+  cols,
+  rows,
+}: TableProps) {
   const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";
 
   const tableClass = isDarkMode ? `${theme}-dark` : theme;
-  const autoSizeStrategy = useMemo<SizeColumnsToFitGridStrategy>(
-    () => ({
-      type: "fitGridWidth",
-    }),
-    [],
-  );
+  // const autoSizeStrategy = useMemo<SizeColumnsToContentStrategy>(
+  //   () => ({
+  //     type: "fitCellContents",
+  //   }),
+  //   []
+  // );
 
   return (
     <div className="flex-1 flex flex-col gap-2">
@@ -48,7 +45,7 @@ export default function Table({ theme, cols, rows }: TableProps) {
           columnDefs={cols}
           rowData={rows}
           rowHeight={80}
-          autoSizeStrategy={autoSizeStrategy}
+          // autoSizeStrategy={autoSizeStrategy}
         />
       </div>
     </div>
