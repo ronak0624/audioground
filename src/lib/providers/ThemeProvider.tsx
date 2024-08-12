@@ -1,3 +1,4 @@
+import { useDarkMode } from "@lib/hooks/useDarkMode";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "dark" | "light" | "system";
@@ -29,6 +30,7 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>(
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
   );
+  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -36,17 +38,13 @@ export function ThemeProvider({
     root.classList.remove("light", "dark");
 
     if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-
+      const systemTheme = isDarkMode ? "dark" : "light";
       root.classList.add(systemTheme);
       return;
     }
 
     root.classList.add(theme);
-  }, [theme]);
+  }, [isDarkMode]);
 
   const value = {
     theme,

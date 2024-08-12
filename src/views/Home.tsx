@@ -10,6 +10,7 @@ import { colConfig } from "@/components/Table/cols";
 import { makeRowFromFFProbe } from "@/components/Table/rows";
 import useTagRunner from "@lib/hooks/useTagRunner";
 import { deleteAllTracks, getUntaggedTracks } from "@lib/store/tracks";
+import { toast } from "sonner";
 
 export default function Home() {
   const [rows, setRows] = useRows();
@@ -33,7 +34,12 @@ export default function Home() {
 
   const handleAutotag = async () => {
     const untagged = (await getUntaggedTracks()).map((t) => t[0]);
-    if (!untagged.length) return;
+    if (!untagged.length) {
+      toast.error("No files selected.");
+      return;
+    }
+
+    toast.info(`Tagging ${untagged.length} files.`);
     await runner.start(untagged);
   };
 
