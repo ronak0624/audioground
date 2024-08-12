@@ -5,12 +5,12 @@ function App() {
   const [done, loading, error] = usePythonVenv();
 
   return (
-    <div>
+    <>
       {loading && <p>Loading dependencies...</p>}
       {error && <p>Error: {error}</p>}
       {done && <p>Dependencies installed!</p>}
       <Interface />
-    </div>
+    </>
   );
 }
 
