@@ -21,7 +21,7 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "types": ["@wdio/mocha-framework", "node", "@wdio/globals/types"],
-    "paths": { "@lib/*": ["src/lib/*"] }
+    "paths": { "@lib/*": ["./src/lib/*"], "@/*": ["./src/*"] }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
