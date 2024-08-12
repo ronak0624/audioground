@@ -1,6 +1,7 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import useTagRunner from "./lib/hooks/useTagRunner";
+import { Button } from "./components/ui/button";
 
 export default function Interface() {
   const [name, setName] = useState("");
@@ -42,7 +43,7 @@ export default function Interface() {
           onChange={(e) => setName(e.currentTarget.value)}
           placeholder="Enter a filepath..."
         />
-        <button type="submit">Start</button>
+        <Button type="submit">Start</Button>
       </form>
 
       <p>{stdout}</p>

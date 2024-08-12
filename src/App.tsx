@@ -1,4 +1,3 @@
-import "./App.css";
 import usePythonVenv from "./lib/shell/python";
 import Interface from "./Interface";
 
