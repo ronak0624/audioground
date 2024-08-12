@@ -67,3 +67,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .btn > .icon {
+    @apply mr-2 h-4 w-4;
+  }
+  .btn > .icon:only-child {
+    @apply mr-0;
+  }
+}
