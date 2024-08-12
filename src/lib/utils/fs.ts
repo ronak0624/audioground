@@ -74,3 +74,9 @@ export async function probeFiles(
 
   await Promise.all(probePromise);
 }
+
+export function getBasename(url: string): string {
+  const normalizedPath = url.replace(/\\/g, "/");
+  const segments = normalizedPath.split("/");
+  return segments.pop() || "";
+}

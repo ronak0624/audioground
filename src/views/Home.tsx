@@ -1,8 +1,20 @@
 import Table from "@/components/Table";
 import Toolbar from "@/components/Toolbar";
+import useRows from "@lib/hooks/useRows";
+import { chooseFolders, probeFiles } from "@lib/utils/fs";
+
+import { colConfig } from "@/components/Table/cols";
 
 export default function Home() {
-  const handleImport = () => {};
+  const [rows] = useRows();
+
+  const handleImport = async () => {
+    const files = await chooseFolders();
+    if (!files) return;
+    await probeFiles(files, (entry) => {
+      console.log(entry);
+    });
+  };
   const handleAutotag = () => {};
   const handleExport = () => {};
   const handleStopAutotag = () => {};
@@ -18,16 +30,7 @@ export default function Home() {
         onStopAutotag={handleStopAutotag}
         onClearLibrary={handleClearLibrary}
       />
-      <Table
-        cols={[
-          {
-            field: "key",
-            headerName: "Key",
-            width: 75,
-          },
-        ]}
-        rows={[{ key: "TEST TABLE" }]}
-      />
+      <Table cols={colConfig} rows={rows} />
     </div>
   );
 }
