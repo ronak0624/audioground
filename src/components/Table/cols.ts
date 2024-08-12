@@ -67,8 +67,8 @@ export const colConfig: ColDef[] = [
     },
   },
   {
-    field: "genre",
-    headerName: "Genre",
+    field: "genres",
+    headerName: "Genres",
     cellRenderer: MultiTagRenderer,
     width: 150,
     filter: true,

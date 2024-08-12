@@ -1,4 +1,3 @@
-import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api";
 import { ProbeResult } from "@lib/types";
 
@@ -27,14 +26,9 @@ export async function listDir(path: string) {
   });
 }
 
-export const chooseFolders = async () => {
-  const selected = await open({
-    directory: true,
-    multiple: true,
-  });
+export const chooseFolders = async (selected: string | string[]) => {
   let directoriesToSearch = [];
 
-  if (!selected) return;
   if (!Array.isArray(selected)) {
     directoriesToSearch.push(selected);
   } else {
@@ -63,10 +57,9 @@ export async function probeFiles(
   list: string[],
   onProgress: (entry: ProbeResult) => void,
 ) {
-  const probePromise = list.map((f) => async () => {
+  const probePromise = list.map(async (f) => {
     const ffprobeRes = await probe(f);
     const entry = { ...ffprobeRes, path: f };
-
     setTrack(f, entry);
 
     onProgress(entry);
