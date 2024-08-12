@@ -31,14 +31,6 @@
     --chart-5: 27 87% 67%;
   }
 
-  html,
-  body {
-    @apply h-screen w-screen;
-  }
-  #root {
-    @apply h-full w-full;
-  }
-
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -64,6 +56,14 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+  }
+
+  html,
+  body {
+    @apply h-screen w-screen;
+  }
+  #root {
+    @apply h-full w-full mb-5;
   }
 }
 

@@ -68,14 +68,18 @@
     },
     "windows": [
       {
-        "title": "audioground",
-        "width": 800,
-        "height": 600
+        "height": 720,
+        "resizable": true,
+        "decorations": false,
+        "title": "Audioground",
+        "transparent": true,
+        "width": 1280
       }
     ],
     "security": {
       "csp": null
     },
+    "macOSPrivateApi": true,
     "bundle": {
       "active": true,
       "targets": "all",
@@ -87,7 +91,19 @@
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
+      ],
+      "macOS": {
+        "entitlements": null,
+        "exceptionDomain": "",
+        "frameworks": [],
+        "providerShortName": null,
+        "signingIdentity": null
+      },
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
     }
   }
 }
