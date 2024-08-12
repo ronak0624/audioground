@@ -26,7 +26,7 @@ export default function Table({
   cols,
   rows,
 }: TableProps) {
-  const isDarkMode = useDarkMode();
+  const { isDarkMode } = useDarkMode();
   const tableClass = isDarkMode ? `${theme}-dark` : theme;
   // const autoSizeStrategy = useMemo<SizeColumnsToContentStrategy>(
   //   () => ({
