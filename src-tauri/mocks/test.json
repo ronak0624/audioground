@@ -1,0 +1,17 @@
+{
+  "file_extension": "mp3",
+  "key": "D#",
+  "duration": 209.6,
+  "bpm": 152.0,
+  "genre": ["Electronic", "Dubstep"],
+  "instrument": [
+    "synthesizer",
+    "bass",
+    "piano",
+    "drums",
+    "keyboard",
+    "computer"
+  ],
+  "moods": ["energetic", "space", "melodic", "dark", "slow"],
+  "path": "test.mp3"
+}
