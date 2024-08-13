@@ -9,7 +9,11 @@ import { chooseFolders, probeFiles } from "@lib/utils/fs";
 import { colConfig } from "@/components/Table/cols";
 import { makeRowFromFFProbe } from "@/components/Table/rows";
 import useTagRunner from "@lib/hooks/useTagRunner";
-import { deleteAllTracks, getUntaggedTracks } from "@lib/store/tracks";
+import {
+  deleteAllTracks,
+  exportDataset,
+  getUntaggedTracks,
+} from "@lib/store/tracks";
 import { toast } from "sonner";
 import RunStatus from "@/components/RunStatus";
 
@@ -48,7 +52,9 @@ export default function Home() {
     refreshRows();
   };
 
-  const handleExport = () => {};
+  const handleExport = async () => {
+    await exportDataset();
+  };
 
   const handleStopAutotag = async () => {
     await runner.stop();
