@@ -117,7 +117,8 @@ class AudioFeatures:
         )
         predictions = genre_model(ebds)
         parsed, _ = self._parse_outputs(predictions, genre_classes)
-        return ", ".join(parsed).replace("---", ", ").split(", ")
+        # Parse flat list of genres from Genre---Subgenre
+        return list(set(", ".join(parsed).replace("---", ", ").split(", ")))
 
     def get_mood(self, ebds):
         mood_path = self.models["moods"].get_path()

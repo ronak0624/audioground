@@ -69,6 +69,11 @@ export async function deleteAllTracks() {
   return checkWithUser;
 }
 
+export async function deleteTrack(key: string) {
+  await trackStore.delete(key);
+  await trackStore.save();
+}
+
 // Export the store to json
 export async function exportDataset() {
   const tracks = _.filter(

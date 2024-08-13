@@ -13,7 +13,7 @@ export type TrackRow = Track & {
 
 export function makeRow(path: string, item: Track): TrackRow {
   let status: TrackStatus = "untagged";
-  if (!_.isEmpty(item.genre)) {
+  if (!_.isEmpty(item.instrument)) {
     status = "completed";
   }
   let filename = getBasename(path);
