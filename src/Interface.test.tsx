@@ -6,8 +6,8 @@ expect.extend(matchers);
 import Interface from "./Interface";
 
 describe("React Component Tests", () => {
-  it("should have container", async () => {
+  it("should have fullscreen container", async () => {
     render(<Interface />);
-    expect(screen.getByRole("main")).toHaveElementClass("container");
+    expect(screen.getByRole("main")).toHaveElementClass("h-full w-full");
   });
 });

@@ -10,9 +10,11 @@ import { colConfig } from "@/components/Table/cols";
 import { makeRowFromFFProbe } from "@/components/Table/rows";
 import useTagRunner from "@lib/hooks/useTagRunner";
 import { deleteAllTracks, getUntaggedTracks } from "@lib/store/tracks";
+import { toast } from "sonner";
+import RunStatus from "@/components/RunStatus";
 
 export default function Home() {
-  const [rows, setRows] = useRows();
+  const [rows, setRows, refreshRows] = useRows();
   const runner = useTagRunner();
 
   const handleImport = async () => {
@@ -33,8 +35,17 @@ export default function Home() {
 
   const handleAutotag = async () => {
     const untagged = (await getUntaggedTracks()).map((t) => t[0]);
-    if (!untagged.length) return;
-    await runner.start(untagged);
+    if (!untagged.length) {
+      toast.error("No files selected.");
+      return;
+    }
+
+    toast.info(`Tagging ${untagged.length} files.`);
+    await runner.start(untagged, onRunComplete);
+  };
+
+  const onRunComplete = () => {
+    refreshRows();
   };
 
   const handleExport = () => {};
@@ -59,6 +70,10 @@ export default function Home() {
         onExport={handleExport}
         onStopAutotag={handleStopAutotag}
         onClearLibrary={handleClearLibrary}
+      />
+      <RunStatus
+        progress={runner.progress}
+        currentEntry={runner.currentEntry}
       />
       <Table cols={colConfig} rows={rows} />
     </div>

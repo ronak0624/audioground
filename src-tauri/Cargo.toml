@@ -11,7 +11,7 @@ edition = "2021"
 tauri-build = { version = "1", features = [] }
 
 [dependencies]
-tauri = { version = "1", features = [ "dialog-save", "http-request", "fs-write-file", "dialog-confirm", "protocol-all", "window-all", "dialog-open", "path-all", "shell-sidecar", "shell-execute"] }
+tauri = { version = "1", features = [ "macos-private-api", "dialog-save", "http-request", "fs-write-file", "dialog-confirm", "protocol-all", "window-all", "dialog-open", "path-all", "shell-sidecar", "shell-execute"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 glob = "0.3.1"

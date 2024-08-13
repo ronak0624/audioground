@@ -1,6 +1,11 @@
 # Class to take list of paths as input and return list of AudioFeatures objects
-import json
 import os
+from essentia import log
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+log.infoActive = False
+
+import json
 import requests
 import json
 import numpy as np
