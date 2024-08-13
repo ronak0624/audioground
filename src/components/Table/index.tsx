@@ -6,7 +6,7 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 
-import "./theme.module.css";
+import "./theme.css";
 import { Search } from "../Search";
 import { useDarkMode } from "@lib/hooks/useDarkMode";
 
