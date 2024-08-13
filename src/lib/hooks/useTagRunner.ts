@@ -11,6 +11,7 @@ const INIT_STATE: AudioLabels = {
   duration: 0,
   bpm: "",
   genre: "",
+  genres: "",
   instrument: "",
   moods: "",
   path: "",
@@ -25,7 +26,11 @@ export type RunnerStatus =
   | "Error";
 
 export type TagRunnerResult = {
-  start: (list: string[], onComplete: () => void) => Promise<void>;
+  start: (
+    list: string[],
+    onComplete: () => void,
+    onStdout: (entry: AudioLabels) => void,
+  ) => Promise<void>;
   stop: () => Promise<void>;
   status: RunnerStatus;
   stdout: string[];
@@ -36,7 +41,8 @@ export type TagRunnerResult = {
 };
 
 const tagger = async (paths: string[]) => {
-  const sanitized = paths.map((path) => `"${path.replaceAll('"', '\\"')}"`);
+  const sanitized = paths.map((path) => `'${path.replaceAll("'", "'\\''")}'`);
+
   const root = await join(await resourceDir(), "python");
   const PYTHON = await join(root, ".venv/bin/python");
   const MAIN = await join(root, "main.py");
@@ -58,7 +64,12 @@ export default function useTagRunner(): TagRunnerResult {
   const progress = useRef(0);
   const total = useRef(0);
 
-  const start = async (list: string[], onComplete = () => {}) => {
+  // TODO: Create shell sidecar class
+  const start = async (
+    list: string[],
+    onComplete = () => {},
+    onStdout = (_: AudioLabels) => {},
+  ) => {
     console.log(list);
     setStatus("Initializing");
     total.current = list.length;
@@ -77,11 +88,12 @@ export default function useTagRunner(): TagRunnerResult {
         }
 
         if (!line || line[0] !== "{") return;
+
         setStatus("Running");
         setStdout((prev) => [...prev, line]);
         const entry: AudioLabels = JSON.parse(line);
         console.log(entry);
-
+        onStdout(entry);
         progress.current = Math.round(progress.current + 1);
         setTrack(entry.path, entry);
         setCurrentEntry(entry);

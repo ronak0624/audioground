@@ -41,7 +41,7 @@ export async function getAllTracks() {
 export async function getUntaggedTracks() {
   const tracks = await getAllTracks();
 
-  return _.filter(tracks, ([, value]) => !value.genre);
+  return _.filter(tracks, ([, value]) => !value.instrument);
 }
 
 /**
@@ -51,7 +51,7 @@ export async function getUntaggedTracks() {
 export async function getTaggedTracks() {
   const tracks = await getAllTracks();
 
-  return _.filter(tracks, ([, value]) => !!value.genre);
+  return _.filter(tracks, ([, value]) => !!value.instrument);
 }
 
 /**
@@ -73,7 +73,7 @@ export async function deleteAllTracks() {
 export async function exportDataset() {
   const tracks = _.filter(
     await trackStore.values<Track>(),
-    (track) => !!track.genre,
+    (track) => !!track.instrument,
   );
   const json = JSON.stringify(tracks, null, 2);
   const output = await dialog.save({

@@ -1,5 +1,5 @@
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-import type { ColDef } from "@ag-grid-community/core";
+import type { ColDef, GetRowIdParams } from "@ag-grid-community/core";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { twMerge } from "tailwind-merge";
 import { AgGridReact } from "@ag-grid-community/react";
@@ -10,9 +10,17 @@ import "./theme.css";
 import { Search } from "../Search";
 import { useDarkMode } from "@lib/hooks/useDarkMode";
 
-import { PropsWithChildren, useMemo, useRef, useState } from "react";
+import {
+  PropsWithChildren,
+  useMemo,
+  useRef,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useCallback,
+} from "react";
 import { debounce } from "lodash";
-import { Button, ButtonProps } from "../ui/button";
+import { buttonVariants } from "../ui/button";
 import { ChevronsLeftRight, ChevronsRightLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
@@ -27,21 +35,26 @@ export interface TableProps {
   rows: TableRow[];
 }
 
-interface TableControlButtonProps extends ButtonProps {
+interface TableControlButtonProps extends PropsWithChildren {
   label: string;
+  onClick: () => void;
 }
 
-const TableControlButton = (
-  props: PropsWithChildren<TableControlButtonProps>,
-) => {
+const TableControlButton = (props: TableControlButtonProps) => {
   const { children, ...rest } = props;
 
   return (
     <Tooltip>
       <TooltipTrigger>
-        <Button variant="outline" className="p-2 bg-transparent" {...rest}>
+        <div
+          className={twMerge(
+            buttonVariants({ variant: "outline" }),
+            "p-2 bg-transparent",
+          )}
+          onClick={props.onClick}
+        >
           {children}
-        </Button>
+        </div>
       </TooltipTrigger>
       <TooltipContent>
         <p>{rest.label}</p>
@@ -50,16 +63,18 @@ const TableControlButton = (
   );
 };
 
-export default function Table({
-  theme = "ag-theme-quartz",
-  cols,
-  rows,
-}: TableProps) {
+const Table = forwardRef<AgGridReact, TableProps>(function Table(
+  { theme = "ag-theme-quartz", cols, rows },
+  ref,
+) {
   const [quickFilterText, setQuickFilterText] = useState<string>("");
   const { isDarkMode } = useDarkMode();
   const tableClass = isDarkMode ? `${theme}-dark` : theme;
 
   const gridRef = useRef<AgGridReact>(null);
+
+  // Attach the forwarded ref to the gridRef
+  useImperativeHandle(ref, () => gridRef.current as AgGridReact);
 
   const debounceQuickFilter = useMemo(() => {
     return debounce((value: string) => {
@@ -79,15 +94,20 @@ export default function Table({
     }
   };
 
+  const getRowId = useCallback(
+    (params: GetRowIdParams) => String(params.data.path),
+    [],
+  );
+
   return (
     <div className="flex-1 flex flex-col gap-2">
       <div className="flex flex-row items-center w-full gap-2">
         <Search onChange={(e) => debounceQuickFilter(e.target.value)} />
-        <TableControlButton label="Expand Columns" onClick={expandColumns}>
-          <ChevronsLeftRight />
+        <TableControlButton label="Fit Content" onClick={expandColumns}>
+          <ChevronsLeftRight className="icon" />
         </TableControlButton>
-        <TableControlButton label="Contract Columns" onClick={contractColumns}>
-          <ChevronsRightLeft />
+        <TableControlButton label="Fit Screen" onClick={contractColumns}>
+          <ChevronsRightLeft className="icon" />
         </TableControlButton>
       </div>
       <div className={twMerge(tableClass, "flex-1")}>
@@ -97,8 +117,11 @@ export default function Table({
           rowData={rows}
           rowHeight={80}
           quickFilterText={quickFilterText}
+          getRowId={getRowId}
         />
       </div>
     </div>
   );
-}
+});
+
+export default Table;

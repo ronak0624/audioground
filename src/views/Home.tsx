@@ -7,19 +7,25 @@ import useRows from "@lib/hooks/useRows";
 import { chooseFolders, probeFiles } from "@lib/utils/fs";
 
 import { colConfig } from "@/components/Table/cols";
-import { makeRowFromFFProbe } from "@/components/Table/rows";
+import { makeRow, makeRowFromFFProbe } from "@/components/Table/rows";
 import useTagRunner from "@lib/hooks/useTagRunner";
 import {
   deleteAllTracks,
   exportDataset,
+  getTrack,
   getUntaggedTracks,
 } from "@lib/store/tracks";
 import { toast } from "sonner";
 import RunStatus from "@/components/RunStatus";
+import { useRef } from "react";
+import { AudioLabels } from "@lib/types";
+import { AgGridReact } from "@ag-grid-community/react";
 
 export default function Home() {
   const [rows, setRows, refreshRows] = useRows();
   const runner = useTagRunner();
+
+  const gridRef = useRef<AgGridReact>(null);
 
   const handleImport = async () => {
     const selected = await open({
@@ -31,9 +37,7 @@ export default function Home() {
     const files = await chooseFolders(selected);
     await probeFiles(files, (entry) => {
       console.log(entry);
-      setRows((prev) =>
-        _.uniqBy([...prev, makeRowFromFFProbe(entry, prev.length)], "path"),
-      );
+      setRows((prev) => _.uniqBy([...prev, makeRowFromFFProbe(entry)], "path"));
     });
   };
 
@@ -45,7 +49,7 @@ export default function Home() {
     }
 
     toast.info(`Tagging ${untagged.length} files.`);
-    await runner.start(untagged, onRunComplete);
+    await runner.start(untagged, onRunComplete, onStdout);
   };
 
   const onRunComplete = () => {
@@ -53,6 +57,14 @@ export default function Home() {
       toast.success(`Done tagging.`);
     }
     refreshRows();
+  };
+
+  const onStdout = async (update: AudioLabels) => {
+    const entry = await getTrack(update.path);
+
+    gridRef.current?.api.applyTransaction({
+      update: [makeRow(update.path, { ...entry, ...update })],
+    });
   };
 
   const handleExport = async () => {
@@ -81,7 +93,7 @@ export default function Home() {
         onClearLibrary={handleClearLibrary}
       />
       <RunStatus {...runner} />
-      <Table cols={colConfig} rows={rows} />
+      <Table ref={gridRef} cols={colConfig} rows={rows} />
     </div>
   );
 }
