@@ -1,4 +1,5 @@
 # Class to take list of paths as input and return list of AudioFeatures objects
+print(f"<|Loading labeler...|>", flush=True)
 import os
 from essentia import log
 
@@ -40,7 +41,7 @@ def download_model(model_id):
 
     if os.path.exists(model_path):
         return
-
+    print(f"<|Downloading model from {link}|>", flush=True)
     response = requests.get(link)
     with open(model_path, "wb") as f:
         f.write(response.content)

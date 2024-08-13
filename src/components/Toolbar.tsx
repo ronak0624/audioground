@@ -24,6 +24,8 @@ export default function Toolbar({
   onStopAutotag,
   onClearLibrary,
 }: ToolbarProps) {
+  const isDepsInstalled = !!sessionStorage.getItem("venv");
+
   return (
     <div className="flex items-center w-full justify-between">
       <div className="flex items-center gap-5">
@@ -31,14 +33,16 @@ export default function Toolbar({
           <PlusCircleIcon className="icon" />
           <span>Import</span>
         </Button>
-        <Button
-          variant="secondary"
-          onClick={onAutotag}
-          className="btn text-nowrap text-ellipsis"
-        >
-          <TagIcon className="icon" />
-          <span>Run Autotag</span>
-        </Button>
+        {isDepsInstalled && (
+          <Button
+            variant="secondary"
+            onClick={onAutotag}
+            className="btn text-nowrap text-ellipsis"
+          >
+            <TagIcon className="icon" />
+            <span>Run Autotag</span>
+          </Button>
+        )}
         <Button
           variant="secondary"
           onClick={onExport}
