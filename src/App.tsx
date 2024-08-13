@@ -9,14 +9,14 @@ function App() {
   const [done, loading, error] = usePythonVenv();
 
   useEffect(() => {
+    if (loading) {
+      toast.info("Loading environment...", { duration: 4000 });
+    }
     if (error) {
       toast.error(error);
     }
     if (done) {
-      toast.success("Dependencies installed!");
-    }
-    if (loading) {
-      toast.info("Installing dependencies...");
+      toast.success("Environment loaded!", { duration: 4000 });
     }
   }, [done, loading, error]);
 
@@ -24,7 +24,7 @@ function App() {
     <>
       <Titlebar />
       <Interface />
-      <Toaster richColors />
+      <Toaster richColors visibleToasts={6} toastOptions={{ duration: 8000 }} />
     </>
   );
 }

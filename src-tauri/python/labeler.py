@@ -1,4 +1,5 @@
 # Class to take list of paths as input and return list of AudioFeatures objects
+print(f"<|Loading labeler...|>", flush=True)
 import os
 from essentia import log
 
@@ -9,12 +10,14 @@ import json
 import requests
 import json
 import numpy as np
+import librosa
 
 from essentia.standard import (
     MonoLoader,
     TensorflowPredictEffnetDiscogs,
     TensorflowPredict2D,
     MetadataReader,
+    TempoCNN,
 )
 
 # TODO: General case for model that uses manifest to initialize the correct essentia algorithm
@@ -40,7 +43,7 @@ def download_model(model_id):
 
     if os.path.exists(model_path):
         return
-
+    print(f"<|Downloading model from {link}|>", flush=True)
     response = requests.get(link)
     with open(model_path, "wb") as f:
         f.write(response.content)
@@ -130,15 +133,28 @@ class AudioFeatures:
         parsed, _ = self._parse_outputs(predictions, instrument_classes)
         return parsed
 
+    #  FIXME: Implement a much better algorithm for key estimation
+    def get_key(self, y, sr):
+        chroma = librosa.feature.chroma_stft(y=y, sr=sr)
+        key = np.argmax(np.sum(chroma, axis=1))
+        key = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"][key]
+        return key
+
+    def get_bpm(self, y, sr):
+        tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
+        tempo = tempo[0] if type(tempo) == np.ndarray else tempo
+        return round(tempo)
+
     def get_audio_features(self, audiopath):
-        audio = MonoLoader(filename=audiopath, sampleRate=16000, resampleQuality=4)()
+        sr = 16000
+        audio = MonoLoader(filename=audiopath, sampleRate=sr, resampleQuality=4)()
 
         tagpool = MetadataReader(filename=audiopath)()[7]
         entry = {
             "file_extension": os.path.splitext(audiopath)[1],
             "path": audiopath,
-            "key": "A",  # FIXME: use CREPE to get key
-            "bpm": "120",  # FIXME: use TempoCNN to get bpm
+            "key": self.get_key(audio, sr),
+            "bpm": str(self.get_bpm(audio, sr)),
             # "key": f"{key}",
             # "bpm": tempo,
             "genres": [],
