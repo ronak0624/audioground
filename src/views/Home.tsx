@@ -64,7 +64,7 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-5 h-full p-5">
       <Toolbar
-        isRunning={runner.status === "running"}
+        isRunning={runner.status === "Running"}
         onImport={handleImport}
         onAutotag={handleAutotag}
         onExport={handleExport}
@@ -74,6 +74,7 @@ export default function Home() {
       <RunStatus
         progress={runner.progress}
         currentEntry={runner.currentEntry}
+        status={runner.status}
       />
       <Table cols={colConfig} rows={rows} />
     </div>
