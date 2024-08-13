@@ -24,14 +24,15 @@ export type RunnerStatus =
   | "Stopped"
   | "Error";
 
-type TagRunnerProps = {
+export type TagRunnerResult = {
   start: (list: string[], onComplete: () => void) => Promise<void>;
   stop: () => Promise<void>;
   status: RunnerStatus;
   stdout: string[];
   stderr: string;
   progress: number;
-  currentEntry?: AudioLabels;
+  total: number;
+  currentEntry: AudioLabels;
 };
 
 const tagger = async (paths: string[]) => {
@@ -47,8 +48,8 @@ const tagger = async (paths: string[]) => {
   );
 };
 
-export default function useTagRunner(): TagRunnerProps {
-  const [status, setStatus] = useState<TagRunnerProps["status"]>("Stopped");
+export default function useTagRunner(): TagRunnerResult {
+  const [status, setStatus] = useState<TagRunnerResult["status"]>("Stopped");
   const [stdout, setStdout] = useState<string[]>([]);
   const [stderr, setStderr] = useState<string>("");
   const [taggerChild, setTaggerChild] = useState<Child | undefined>();
@@ -61,7 +62,7 @@ export default function useTagRunner(): TagRunnerProps {
     console.log(list);
     setStatus("Initializing");
     total.current = list.length;
-    progress.current = 0.01 / total.current;
+    progress.current = 0.01;
 
     try {
       const instance = await tagger(list);
@@ -81,7 +82,7 @@ export default function useTagRunner(): TagRunnerProps {
         const entry: AudioLabels = JSON.parse(line);
         console.log(entry);
 
-        progress.current = progress.current + 1 / total.current;
+        progress.current = Math.round(progress.current + 1);
         setTrack(entry.path, entry);
         setCurrentEntry(entry);
       });
@@ -95,7 +96,7 @@ export default function useTagRunner(): TagRunnerProps {
       instance.on("close", () => {
         console.log("closed");
         progress.current = 0;
-        toast.success(`Done tagging ${total.current} files.`);
+
         onComplete();
         setStatus("Stopped");
       });
@@ -118,6 +119,9 @@ export default function useTagRunner(): TagRunnerProps {
     console.log("stopping");
     await taggerChild?.kill();
     setStatus("Stopped");
+    toast.warning(
+      `Tagging stopped with ${total.current - progress.current} files left.`,
+    );
     progress.current = 0;
   };
 
@@ -128,6 +132,7 @@ export default function useTagRunner(): TagRunnerProps {
     stdout,
     stderr,
     progress: progress.current,
+    total: total.current,
     currentEntry,
   };
 }

@@ -40,7 +40,7 @@ export default function Home() {
   const handleAutotag = async () => {
     const untagged = (await getUntaggedTracks()).map((t) => t[0]);
     if (!untagged.length) {
-      toast.error("No files selected.");
+      toast.success("All files are already tagged.");
       return;
     }
 
@@ -49,6 +49,9 @@ export default function Home() {
   };
 
   const onRunComplete = () => {
+    if (runner.status !== "Error") {
+      toast.success(`Done tagging.`);
+    }
     refreshRows();
   };
 
@@ -77,11 +80,7 @@ export default function Home() {
         onStopAutotag={handleStopAutotag}
         onClearLibrary={handleClearLibrary}
       />
-      <RunStatus
-        progress={runner.progress}
-        currentEntry={runner.currentEntry}
-        status={runner.status}
-      />
+      <RunStatus {...runner} />
       <Table cols={colConfig} rows={rows} />
     </div>
   );
