@@ -39,9 +39,8 @@ export const colConfig: ColDef[] = [
   },
   {
     field: "artist",
-    flex: 1,
+    initialWidth: 100,
     width: 100,
-    // cellRenderer: SingleRowCellRenderer,
     editable: true,
     valueSetter: (params) => {
       setTrack(params.data.path, { tags: { artist: params.newValue } });
