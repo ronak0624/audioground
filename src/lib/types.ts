@@ -29,6 +29,7 @@ export interface AudioLabels {
   duration: number;
   bpm: string;
   genre: string;
+  genres: string;
   instrument: string;
   moods: string;
   path: string;

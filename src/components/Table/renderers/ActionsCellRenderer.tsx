@@ -3,12 +3,14 @@ import { type FunctionComponent, useCallback } from "react";
 
 import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { deleteTrack } from "@lib/store/tracks";
 
 export const ActionsCellRenderer: FunctionComponent<
   CustomCellRendererProps
 > = ({ api, node }) => {
   const onRemoveClick = useCallback(() => {
     const rowData = node.data;
+    deleteTrack(rowData.path);
     api.applyTransaction({ remove: [rowData] });
   }, [node, api]);
 

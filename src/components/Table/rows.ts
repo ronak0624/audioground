@@ -5,15 +5,15 @@ import { TrackStatus } from "@/components/Table/cols";
 import { getBasename } from "@lib/utils/fs";
 
 export type TrackRow = Track & {
-  id: number;
+  id: string;
   status: TrackStatus;
   title: string;
   filename: string;
 };
 
-export function makeRow(path: string, item: Track, i: number): TrackRow {
+export function makeRow(path: string, item: Track): TrackRow {
   let status: TrackStatus = "untagged";
-  if (!_.isEmpty(item.genre)) {
+  if (!_.isEmpty(item.instrument)) {
     status = "completed";
   }
   let filename = getBasename(path);
@@ -22,7 +22,7 @@ export function makeRow(path: string, item: Track, i: number): TrackRow {
   return {
     ...item.tags,
     ...item,
-    id: i,
+    id: path,
     status,
     title: title !== "" ? title : filename,
     filename,
@@ -32,9 +32,9 @@ export function makeRow(path: string, item: Track, i: number): TrackRow {
 
 export default async function getRows() {
   const tracks = await getAllTracks();
-  return _.map(tracks, ([path, item], i) => makeRow(path, item, i));
+  return _.map(tracks, ([path, item]) => makeRow(path, item));
 }
 
-export function makeRowFromFFProbe(info: ProbeResult, i: number): TrackRow {
-  return makeRow(info.path, info, i);
+export function makeRowFromFFProbe(info: ProbeResult): TrackRow {
+  return makeRow(info.path, info);
 }
