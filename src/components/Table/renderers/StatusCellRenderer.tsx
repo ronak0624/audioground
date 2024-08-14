@@ -19,7 +19,7 @@ const displayText = {
   untagged: <BookmarkX size={16} />,
 };
 
-export const StatusCellRenderer: FunctionComponent<CustomCellRendererProps> = ({
+const StatusCellRenderer: FunctionComponent<CustomCellRendererProps> = ({
   value,
 }: {
   value: TrackStatus;
@@ -30,4 +30,4 @@ export const StatusCellRenderer: FunctionComponent<CustomCellRendererProps> = ({
   </Badge>
 );
 
-// }) => <Badge intent={colors[value]}>{valueFormatted}</Badge>;
+export default StatusCellRenderer;

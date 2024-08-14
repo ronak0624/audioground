@@ -15,7 +15,7 @@ const InnerText = (props: PropsWithChildren<{ loading?: boolean }>) => {
   if (props.loading) {
     return (
       <div className="flex items-center gap-5">
-        <Loader /> <span>{props.children}</span>
+        <Loader /> <div>{props.children}</div>
       </div>
     );
   }

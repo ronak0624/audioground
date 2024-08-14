@@ -1,6 +1,7 @@
 import { ActionsCellRenderer } from "./renderers/ActionsCellRenderer";
 import { TitleCellRenderer } from "./renderers/TitleCellRenderer";
-import { StatusCellRenderer } from "./renderers/StatusCellRenderer";
+import StatusCellRenderer from "./renderers/StatusCellRenderer";
+import MultiTagRenderer from "./renderers/MultiTagRenderer";
 import { ColDef, ValueFormatterFunc } from "@ag-grid-community/core";
 
 import { setTrack } from "@lib/store/tracks";
@@ -59,7 +60,7 @@ export const colConfig: ColDef[] = [
     field: "instrument",
     headerName: "Instrument",
     width: 150,
-    // cellRenderer: MultiTagRenderer,
+    cellRenderer: MultiTagRenderer,
     filter: true,
     filterParams: {
       valueFormatter: statusFormatter,
@@ -68,7 +69,7 @@ export const colConfig: ColDef[] = [
   {
     field: "genres",
     headerName: "Genres",
-    // cellRenderer: MultiTagRenderer,
+    cellRenderer: MultiTagRenderer,
     width: 150,
     filter: true,
     filterParams: {
@@ -79,7 +80,7 @@ export const colConfig: ColDef[] = [
     field: "moods",
     headerName: "Mood",
     width: 150,
-    // cellRenderer: MultiTagRenderer,
+    cellRenderer: MultiTagRenderer,
     filter: true,
     filterParams: {
       valueFormatter: statusFormatter,
