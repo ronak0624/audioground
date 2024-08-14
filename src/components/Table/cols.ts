@@ -5,6 +5,8 @@ import MultiTagRenderer from "./renderers/MultiTagRenderer";
 import { ColDef, ValueFormatterFunc } from "@ag-grid-community/core";
 
 import { setTrack } from "@lib/store/tracks";
+import MultiTagEditor from "./renderers/MultiTagEditor";
+import KeyEditor from "./renderers/KeyEditor";
 
 const statuses = {
   completed: "Completed",
@@ -16,6 +18,10 @@ export type TrackStatus = keyof typeof statuses;
 
 const statusFormatter: ValueFormatterFunc = ({ value }) => {
   return statuses[value as TrackStatus] ?? "";
+};
+
+const tagFormatter: ValueFormatterFunc = ({ value }) => {
+  return value.join(", ");
 };
 
 export const colConfig: ColDef[] = [
@@ -34,9 +40,8 @@ export const colConfig: ColDef[] = [
   },
   {
     field: "artist",
-    flex: 1,
+    initialWidth: 100,
     width: 100,
-    // cellRenderer: SingleRowCellRenderer,
     editable: true,
     valueSetter: (params) => {
       setTrack(params.data.path, { tags: { artist: params.newValue } });
@@ -48,12 +53,28 @@ export const colConfig: ColDef[] = [
   {
     field: "key",
     headerName: "Key",
+    editable: true,
+    cellEditor: KeyEditor,
     width: 75,
   },
   {
     field: "bpm",
     headerName: "BPM",
+    cellEditor: "agNumberCellEditor",
+    editable: true,
     width: 75,
+    valueSetter: (params) => {
+      setTrack(params.data.path, { bpm: params.newValue.toString() });
+      params.data.bpm = params.newValue;
+      return true;
+    },
+    comparator: (a, b) => {
+      a = a || "0";
+      b = b || "0";
+      if (a == b) return 0;
+
+      return parseInt(a) > parseInt(b) ? 1 : -1;
+    },
     valueFormatter: ({ value }) => (value > 0 ? `${value}` : ""),
   },
   {
@@ -61,19 +82,23 @@ export const colConfig: ColDef[] = [
     headerName: "Instrument",
     width: 150,
     cellRenderer: MultiTagRenderer,
+    editable: true,
+    cellEditor: MultiTagEditor,
     filter: true,
     filterParams: {
-      valueFormatter: statusFormatter,
+      valueFormatter: tagFormatter,
     },
   },
   {
     field: "genres",
     headerName: "Genres",
     cellRenderer: MultiTagRenderer,
+    editable: true,
+    cellEditor: MultiTagEditor,
     width: 150,
     filter: true,
     filterParams: {
-      valueFormatter: statusFormatter,
+      valueFormatter: tagFormatter,
     },
   },
   {
@@ -81,9 +106,11 @@ export const colConfig: ColDef[] = [
     headerName: "Mood",
     width: 150,
     cellRenderer: MultiTagRenderer,
+    editable: true,
+    cellEditor: MultiTagEditor,
     filter: true,
     filterParams: {
-      valueFormatter: statusFormatter,
+      valueFormatter: tagFormatter,
     },
   },
   { field: "actions", cellRenderer: ActionsCellRenderer, width: 100 },

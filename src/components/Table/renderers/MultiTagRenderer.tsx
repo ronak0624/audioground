@@ -2,10 +2,10 @@ import { FunctionComponent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import { Badge } from "@/components/ui/badge";
 
-const MultiTagRenderer: FunctionComponent<CustomCellRendererProps> = ({
+const MultiTagRenderer: FunctionComponent<Partial<CustomCellRendererProps>> = ({
   value,
 }) => {
-  if (typeof value !== "object" || !value)
+  if (typeof value !== "object" || !value || value.length === 0)
     return (
       <Badge variant="secondary" className="text-muted-foreground">
         N/A

@@ -20,8 +20,8 @@ export function makeRow(path: string, item: Track): TrackRow {
   let title = item.tags?.title ?? "";
 
   return {
-    ...item.tags,
     ...item,
+    ...item.tags,
     id: path,
     status,
     title: title !== "" ? title : filename,

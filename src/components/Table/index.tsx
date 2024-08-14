@@ -23,16 +23,14 @@ import { debounce } from "lodash";
 import { buttonVariants } from "../ui/button";
 import { ChevronsLeftRight, ChevronsRightLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { TrackRow } from "./rows";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
-
-// FIXME: Switch out with TrackData type
-type TableRow = Record<string, any>;
 
 export interface TableProps {
   cols: ColDef[];
   theme?: string;
-  rows: TableRow[];
+  rows: TrackRow[];
 }
 
 interface TableControlButtonProps extends PropsWithChildren {
