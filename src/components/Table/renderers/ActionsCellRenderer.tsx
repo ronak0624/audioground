@@ -16,7 +16,11 @@ export const ActionsCellRenderer: FunctionComponent<
 
   return (
     <div className="flex flex-row gap-8">
-      <Button className="btn" variant="destructive" onClick={onRemoveClick}>
+      <Button
+        className="bg-transparent text-destructive hover:bg-destructive/90"
+        variant="ghost"
+        onClick={onRemoveClick}
+      >
         <Trash className="icon" />
       </Button>
     </div>

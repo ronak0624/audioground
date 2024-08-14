@@ -16,9 +16,12 @@ const trackStore = new Store(".tracks.dat");
  * @param key Path to track as key. Note that if a track has moved, it will be considered a new file by the tagger.
  * @param value Track to set. If editing an exisitng key, only the keys you provide will be overwritten
  */
-export async function setTrack(key: string, value: Track) {
+export async function setTrack(key: string, value: Track, merge = true) {
   const prev = await getTrack(key);
-  await trackStore.set(key, _.merge(prev, value));
+  await trackStore.set(
+    key,
+    merge ? _.merge(prev, value) : { ...prev, ...value },
+  );
   await trackStore.save();
 }
 

@@ -5,6 +5,7 @@ import MultiTagRenderer from "./renderers/MultiTagRenderer";
 import { ColDef, ValueFormatterFunc } from "@ag-grid-community/core";
 
 import { setTrack } from "@lib/store/tracks";
+import MultiTagEditor from "./renderers/MultiTagEditor";
 
 const statuses = {
   completed: "Completed",
@@ -16,6 +17,10 @@ export type TrackStatus = keyof typeof statuses;
 
 const statusFormatter: ValueFormatterFunc = ({ value }) => {
   return statuses[value as TrackStatus] ?? "";
+};
+
+const tagFormatter: ValueFormatterFunc = ({ value }) => {
+  return value.join(", ");
 };
 
 export const colConfig: ColDef[] = [
@@ -61,19 +66,23 @@ export const colConfig: ColDef[] = [
     headerName: "Instrument",
     width: 150,
     cellRenderer: MultiTagRenderer,
+    editable: true,
+    cellEditor: MultiTagEditor,
     filter: true,
     filterParams: {
-      valueFormatter: statusFormatter,
+      valueFormatter: tagFormatter,
     },
   },
   {
     field: "genres",
     headerName: "Genres",
     cellRenderer: MultiTagRenderer,
+    editable: true,
+    cellEditor: MultiTagEditor,
     width: 150,
     filter: true,
     filterParams: {
-      valueFormatter: statusFormatter,
+      valueFormatter: tagFormatter,
     },
   },
   {
@@ -81,9 +90,11 @@ export const colConfig: ColDef[] = [
     headerName: "Mood",
     width: 150,
     cellRenderer: MultiTagRenderer,
+    editable: true,
+    cellEditor: MultiTagEditor,
     filter: true,
     filterParams: {
-      valueFormatter: statusFormatter,
+      valueFormatter: tagFormatter,
     },
   },
   { field: "actions", cellRenderer: ActionsCellRenderer, width: 100 },
