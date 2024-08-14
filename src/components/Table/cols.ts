@@ -6,6 +6,7 @@ import { ColDef, ValueFormatterFunc } from "@ag-grid-community/core";
 
 import { setTrack } from "@lib/store/tracks";
 import MultiTagEditor from "./renderers/MultiTagEditor";
+import KeyEditor from "./renderers/KeyEditor";
 
 const statuses = {
   completed: "Completed",
@@ -52,12 +53,28 @@ export const colConfig: ColDef[] = [
   {
     field: "key",
     headerName: "Key",
+    editable: true,
+    cellEditor: KeyEditor,
     width: 75,
   },
   {
     field: "bpm",
     headerName: "BPM",
+    cellEditor: "agNumberCellEditor",
+    editable: true,
     width: 75,
+    valueSetter: (params) => {
+      setTrack(params.data.path, { bpm: params.newValue.toString() });
+      params.data.bpm = params.newValue;
+      return true;
+    },
+    comparator: (a, b) => {
+      a = a || "0";
+      b = b || "0";
+      if (a == b) return 0;
+
+      return parseInt(a) > parseInt(b) ? 1 : -1;
+    },
     valueFormatter: ({ value }) => (value > 0 ? `${value}` : ""),
   },
   {

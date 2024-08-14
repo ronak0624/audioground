@@ -17,8 +17,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { values } from "lodash";
-
 export type ComoboxValue = {
   value: string;
   label?: string;
@@ -26,15 +24,18 @@ export type ComoboxValue = {
 };
 
 type ComboboxProps = {
-  list: Record<string, ComoboxValue>;
+  list: ComoboxValue[];
   open: boolean;
   setOpen: (value: boolean) => void;
   onSelect: (value: string) => void;
+  placeholder?: string;
+  emptyText?: string;
 };
 
 export default function Combobox(props: PropsWithChildren<ComboboxProps>) {
-  const { list, open, setOpen, onSelect, children } = props;
-  const renderList = values(list).sort((a, b) => {
+  const { list, open, setOpen, onSelect, children, emptyText, placeholder } =
+    props;
+  const renderList = list.sort((a, b) => {
     if (a.selected === b.selected) {
       return a.value.localeCompare(b.value);
     }
@@ -50,9 +51,11 @@ export default function Combobox(props: PropsWithChildren<ComboboxProps>) {
       </PopoverTrigger>
       <PopoverContent side="bottom" align="start" className="p-0">
         <Command>
-          <CommandInput placeholder="Search tag..." />
+          <CommandInput placeholder={placeholder ?? "Search tag..."} />
           <CommandList>
-            <CommandEmpty className="py-6 text-sm">Add new tag.</CommandEmpty>
+            <CommandEmpty className="py-6 text-sm">
+              {emptyText ?? "Add new tag."}
+            </CommandEmpty>
             <CommandGroup>
               {renderList.map((tag) => (
                 <CommandItem
