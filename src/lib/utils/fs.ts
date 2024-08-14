@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api";
 import { ProbeResult } from "@lib/types";
 
-import { setTrack } from "@lib/store/tracks";
+import { trackStore } from "@lib/store/tracks";
 
 const EXTENSIONS = [
   ".mp3",
@@ -60,7 +60,7 @@ export async function probeFiles(
   const probePromise = list.map(async (f) => {
     const ffprobeRes = await probe(f);
     const entry = { ...ffprobeRes, path: f };
-    setTrack(f, entry);
+    await trackStore.set(f, entry);
 
     onProgress(entry);
   });

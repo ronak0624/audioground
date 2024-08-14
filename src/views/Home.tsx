@@ -17,28 +17,34 @@ import {
 } from "@lib/store/tracks";
 import { toast } from "sonner";
 import RunStatus from "@/components/RunStatus";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { AudioLabels } from "@lib/types";
 import { AgGridReact } from "@ag-grid-community/react";
 
 export default function Home() {
   const [rows, setRows, refreshRows] = useRows();
   const runner = useTagRunner();
+  const [importing, setImporting] = useState(false);
 
   const gridRef = useRef<AgGridReact>(null);
 
   const handleImport = async () => {
+    setImporting(true);
     const selected = await open({
       directory: true,
       multiple: true,
     });
-    if (!selected) return;
+    if (!selected) {
+      setImporting(false);
+      return;
+    }
 
     const files = await chooseFolders(selected);
     await probeFiles(files, (entry) => {
       console.log(entry);
       setRows((prev) => _.uniqBy([...prev, makeRowFromFFProbe(entry)], "path"));
     });
+    setImporting(false);
   };
 
   const handleAutotag = async () => {
@@ -91,6 +97,7 @@ export default function Home() {
         onExport={handleExport}
         onStopAutotag={handleStopAutotag}
         onClearLibrary={handleClearLibrary}
+        isImporting={importing}
       />
       <RunStatus {...runner} />
       <Table ref={gridRef} cols={colConfig} rows={rows} />
