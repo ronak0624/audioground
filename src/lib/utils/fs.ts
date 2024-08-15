@@ -2,6 +2,8 @@ import { invoke } from "@tauri-apps/api";
 import { ProbeResult } from "@lib/types";
 
 import { trackStore } from "@lib/store/tracks";
+import { parseBuffer } from "music-metadata";
+import { convertFileSrc } from "@tauri-apps/api/tauri";
 
 const EXTENSIONS = [
   ".mp3",
@@ -72,4 +74,17 @@ export function getBasename(url: string): string {
   const normalizedPath = url.replace(/\\/g, "/");
   const segments = normalizedPath.split("/");
   return segments.pop() || "";
+}
+
+export async function getMetadataWithClient(path: string) {
+  // Create Uint8Array Buffer from the file
+  const buffer = await (await fetch(convertFileSrc(path))).arrayBuffer();
+  const stream = new Uint8Array(buffer);
+
+  try {
+    const metadata = await parseBuffer(stream);
+    return metadata;
+  } catch (error) {
+    console.error(error);
+  }
 }
