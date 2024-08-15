@@ -30,6 +30,11 @@ async fn probe(path: String) -> Result<String, String> {
     }
 }
 
+#[tauri::command]
+async fn get_album_art(path: String) -> metaprobe::AlbumArt {
+    metaprobe::get_album_art(&path)
+}
+
 fn main() {
     let _ = fix_path_env::fix();
 
@@ -47,7 +52,7 @@ fn main() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![ls, probe])
+        .invoke_handler(tauri::generate_handler![ls, probe, get_album_art])
         .plugin(tauri_plugin_store::Builder::default().build())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

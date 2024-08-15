@@ -1,10 +1,11 @@
-import { getMetadataWithClient } from "@lib/utils/fs";
-import { selectCover } from "music-metadata";
+import { invoke } from "@tauri-apps/api";
 import { useEffect, useRef } from "react";
 
-// Initializes with the default image, then fetches the album art
-// directly from the file metadata. Unmounts and removes the blob
-// when the row is removed from the table buffer.
+type AlbumArtRust = {
+  mime_type: string;
+  data: Uint8Array;
+};
+
 // Initializes with the default image, then fetches the album art
 // directly from the file metadata. Unmounts and removes the blob
 // when the row is removed from the table buffer.
@@ -12,19 +13,22 @@ const AlbumArt = (props: { path: string }) => {
   const ref = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    // TODO: Create fast image downsampler
-    (async () => {
-      const metadata = await getMetadataWithClient(props.path);
+    invoke<AlbumArtRust>("get_album_art", { path: props.path }).then(
+      ({ data, mime_type }) => {
+        if (!data || !ref.current) return;
 
-      if (!metadata || !ref.current) return;
-      const { common } = metadata;
-      let content = selectCover(common.picture)?.data;
+        const blob = new Blob([new Uint8Array(data)], {
+          type: mime_type,
+        });
 
-      if (!content?.buffer) return;
-      const blob = new Blob([content.buffer]);
-      ref.current.src = URL.createObjectURL(blob);
-    })();
+        if (blob.size < 50) {
+          ref.current.src = "/thumbdefault.svg";
+          return;
+        }
 
+        ref.current.src = URL.createObjectURL(blob);
+      },
+    );
     return () => {
       if (!ref.current) return;
       URL.revokeObjectURL(ref.current.src);
