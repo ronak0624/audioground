@@ -40,9 +40,12 @@ export default function Home() {
     }
 
     const files = await chooseFolders(selected);
-    await probeFiles(files, async (entry) => {
-      const row = await makeRowFromFFProbe(entry);
-      setRows((prev) => _.uniqBy([...prev, row], "path"));
+    await probeFiles(files, (entry) => {
+      const row = makeRowFromFFProbe(entry);
+      gridRef.current?.api.applyTransaction({
+        add: [row],
+      });
+      // setRows((prev) => _.uniqBy([...prev, row], "path"));
     });
     setImporting(false);
   };
@@ -89,7 +92,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col gap-5 h-full p-5">
+    <div data-tauri-drag-region className="flex flex-col gap-5 h-full p-5 mb-5">
       <Toolbar
         isRunning={runner.status === "Running"}
         onImport={handleImport}

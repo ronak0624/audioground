@@ -33,7 +33,7 @@ export function makeRow(path: string, item: Track): TrackRow {
 
 export default async function getRows() {
   const tracks = await getAllTracks();
-  await Promise.all(
+  Promise.all(
     _.forEach(tracks, async ([path, item]) => {
       let thumbnail = await getThumbnail(path);
       if (thumbnail && item.tags) {
