@@ -37,3 +37,8 @@ export interface AudioLabels {
 }
 
 export type Track = Partial<ProbeResult> & Partial<AudioLabels>;
+
+export type AlbumArtRust = {
+  mime_type: string;
+  data: Uint8Array;
+};

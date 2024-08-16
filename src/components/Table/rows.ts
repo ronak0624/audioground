@@ -3,6 +3,7 @@ import { getAllTracks } from "@lib/store/tracks";
 import { ProbeResult, Track } from "@lib/types";
 import { TrackStatus } from "@/components/Table/cols";
 import { getBasename } from "@lib/utils/fs";
+import { getThumbnail } from "@lib/store/thumbnails";
 
 export type TrackRow = Track & {
   id: string;
@@ -32,6 +33,14 @@ export function makeRow(path: string, item: Track): TrackRow {
 
 export default async function getRows() {
   const tracks = await getAllTracks();
+  await Promise.all(
+    _.forEach(tracks, async ([path, item]) => {
+      let thumbnail = await getThumbnail(path);
+      if (thumbnail && item.tags) {
+        Object.assign(item.tags, { thumbnail });
+      }
+    }),
+  );
   return _.map(tracks, ([path, item]) => makeRow(path, item));
 }
 

@@ -4,15 +4,17 @@ import AlbumArt from "./AlbumArt";
 
 export const TitleCellRenderer: FunctionComponent<CustomCellRendererProps> = ({
   value,
-  data: { album, path },
+  data,
 }) => {
   return (
     <div className="h-full flex flex-row items-center justify-center">
-      <AlbumArt path={path} />
+      <AlbumArt path={data.path} data={data.tags.thumbnail} />
       <div>
         <div className="text-sm og-link">{value}</div>
-        {album ? (
-          <div className="text-xs text-gray-500 hover:underline">{album}</div>
+        {data.album ? (
+          <div className="text-xs text-gray-500 hover:underline">
+            {data.album}
+          </div>
         ) : (
           <div className="text-xs text-transparent">‎</div>
         )}

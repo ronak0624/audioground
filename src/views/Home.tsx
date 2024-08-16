@@ -40,9 +40,9 @@ export default function Home() {
     }
 
     const files = await chooseFolders(selected);
-    await probeFiles(files, (entry) => {
-      console.log(entry);
-      setRows((prev) => _.uniqBy([...prev, makeRowFromFFProbe(entry)], "path"));
+    await probeFiles(files, async (entry) => {
+      const row = await makeRowFromFFProbe(entry);
+      setRows((prev) => _.uniqBy([...prev, row], "path"));
     });
     setImporting(false);
   };

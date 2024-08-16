@@ -113,6 +113,7 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
           ref={gridRef}
           columnDefs={cols}
           rowData={rows}
+          rowBuffer={40}
           rowHeight={80}
           quickFilterText={quickFilterText}
           getRowId={getRowId}
