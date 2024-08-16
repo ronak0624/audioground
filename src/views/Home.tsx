@@ -91,7 +91,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col gap-5 h-full p-5">
+    <div data-tauri-drag-region className="flex flex-col gap-5 h-full p-5 mb-5">
       <Toolbar
         isRunning={runner.status === "Running"}
         onImport={handleImport}

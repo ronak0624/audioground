@@ -63,6 +63,16 @@ const TableControlButton = (props: TableControlButtonProps) => {
   );
 };
 
+const EmptyState = () => {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center">
+      <p className="text-muted-foreground">
+        No tracks yet. Import some from above!
+      </p>
+    </div>
+  );
+};
+
 const Table = forwardRef<AgGridReact, TableProps>(function Table(
   { theme = "ag-theme-quartz", cols, rows, loading },
   ref,
@@ -119,6 +129,7 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
           rowBuffer={40}
           rowHeight={80}
           loading={loading}
+          noRowsOverlayComponent={EmptyState}
           quickFilterText={quickFilterText}
           loadingOverlayComponent={Loader}
           getRowId={getRowId}
