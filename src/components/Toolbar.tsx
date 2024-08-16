@@ -67,9 +67,9 @@ export default function Toolbar({
           <span>Export</span>
         </Button>
       </div>
-      <div className="absolute min-w-min left-1/2 right-1/2 -translate-x-1/2 flex gap-2 text-muted-foreground pointer-events-none">
-        <AudioLines />
-        <p>audioground</p>
+      <div className="absolute min-w-min left-1/2 right-1/2 -translate-x-1/2 flex gap-2  pointer-events-none">
+        <AudioLines className="text-foreground" />
+        <p className="text-">audioground</p>
       </div>
       <div className="flex items-center gap-5">
         {isRunning && (

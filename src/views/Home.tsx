@@ -45,7 +45,6 @@ export default function Home() {
       gridRef.current?.api.applyTransaction({
         add: [row],
       });
-      // setRows((prev) => _.uniqBy([...prev, row], "path"));
     });
     setImporting(false);
   };
