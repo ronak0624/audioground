@@ -6,18 +6,23 @@ export default function useRows(): [
   TrackRow[],
   React.Dispatch<React.SetStateAction<TrackRow[]>>,
   () => void,
+  boolean,
 ] {
+  const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState<TrackRow[]>([]);
 
   useEffect(() => {
-    refreshRows();
+    (async () => {
+      await refreshRows();
+    })();
   }, []);
 
-  const refreshRows = () => {
-    getRows().then((rows) => {
-      setRows(rows);
-    });
+  const refreshRows = async () => {
+    setLoading(true);
+    const rows = await getRows();
+    setRows(rows);
+    setLoading(false);
   };
 
-  return [rows, setRows, refreshRows];
+  return [rows, setRows, refreshRows, loading];
 }
