@@ -24,6 +24,7 @@ import { buttonVariants } from "../ui/button";
 import { ChevronsLeftRight, ChevronsRightLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { TrackRow } from "./rows";
+import Loader from "../Loader";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -31,6 +32,7 @@ export interface TableProps {
   cols: ColDef[];
   theme?: string;
   rows: TrackRow[];
+  loading?: boolean;
 }
 
 interface TableControlButtonProps extends PropsWithChildren {
@@ -62,7 +64,7 @@ const TableControlButton = (props: TableControlButtonProps) => {
 };
 
 const Table = forwardRef<AgGridReact, TableProps>(function Table(
-  { theme = "ag-theme-quartz", cols, rows },
+  { theme = "ag-theme-quartz", cols, rows, loading },
   ref,
 ) {
   const [quickFilterText, setQuickFilterText] = useState<string>("");
@@ -111,10 +113,14 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
       <div className={twMerge(tableClass, "flex-1")}>
         <AgGridReact
           ref={gridRef}
+          className="bg-transparent"
           columnDefs={cols}
           rowData={rows}
+          rowBuffer={40}
           rowHeight={80}
+          loading={loading}
           quickFilterText={quickFilterText}
+          loadingOverlayComponent={Loader}
           getRowId={getRowId}
         />
       </div>

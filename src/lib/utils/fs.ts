@@ -2,6 +2,8 @@ import { invoke } from "@tauri-apps/api";
 import { ProbeResult } from "@lib/types";
 
 import { trackStore } from "@lib/store/tracks";
+import makeThumbnail from "./thumbnail";
+import { thumbnails } from "@lib/store/thumbnails";
 
 const EXTENSIONS = [
   ".mp3",
@@ -57,15 +59,19 @@ export async function probeFiles(
   list: string[],
   onProgress: (entry: ProbeResult) => void,
 ) {
+  const resizer = document.createElement("canvas");
   const probePromise = list.map(async (f) => {
     const ffprobeRes = await probe(f);
     const entry = { ...ffprobeRes, path: f };
     await trackStore.set(f, entry);
+    await makeThumbnail(f, resizer);
 
     onProgress(entry);
   });
 
   await Promise.all(probePromise);
+  await trackStore.save();
+  await thumbnails.save();
 }
 
 export function getBasename(url: string): string {

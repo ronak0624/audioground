@@ -22,7 +22,7 @@ import { AudioLabels } from "@lib/types";
 import { AgGridReact } from "@ag-grid-community/react";
 
 export default function Home() {
-  const [rows, setRows, refreshRows] = useRows();
+  const [rows, setRows, refreshRows, rowsLoading] = useRows();
   const runner = useTagRunner();
   const [importing, setImporting] = useState(false);
 
@@ -41,8 +41,10 @@ export default function Home() {
 
     const files = await chooseFolders(selected);
     await probeFiles(files, (entry) => {
-      console.log(entry);
-      setRows((prev) => _.uniqBy([...prev, makeRowFromFFProbe(entry)], "path"));
+      const row = makeRowFromFFProbe(entry);
+      gridRef.current?.api.applyTransaction({
+        add: [row],
+      });
     });
     setImporting(false);
   };
@@ -100,7 +102,12 @@ export default function Home() {
         isImporting={importing}
       />
       <RunStatus {...runner} />
-      <Table ref={gridRef} cols={colConfig} rows={rows} />
+      <Table
+        ref={gridRef}
+        cols={colConfig}
+        rows={rows}
+        loading={rowsLoading || importing}
+      />
     </div>
   );
 }

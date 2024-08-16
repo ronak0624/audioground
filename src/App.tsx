@@ -2,8 +2,8 @@ import usePythonVenv from "./lib/shell/python";
 import Interface from "./Interface";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
-import { useEffect } from "react";
-import Titlebar from "./components/Titlebar";
+import { Suspense, useEffect } from "react";
+import { FullScreenLoader } from "./components/Loader";
 
 function App() {
   const [done, loading, error] = usePythonVenv();
@@ -21,11 +21,10 @@ function App() {
   }, [done, loading, error]);
 
   return (
-    <>
-      <Titlebar />
+    <Suspense fallback={<FullScreenLoader />}>
       <Interface />
       <Toaster richColors visibleToasts={6} toastOptions={{ duration: 8000 }} />
-    </>
+    </Suspense>
   );
 }
 

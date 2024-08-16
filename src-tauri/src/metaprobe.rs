@@ -1,7 +1,14 @@
-use audiotags::Tag;
+use audiotags::{MimeType, Tag};
+use serde::Serialize;
 use serde_json::{Map, Value};
 use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
+
+#[derive(Serialize)]
+pub struct AlbumArt {
+    pub mime_type: String,
+    pub data: Vec<u8>,
+}
 
 pub fn get_tags(path: &str) -> Result<Value, &str> {
     let filename = Path::new(path)
@@ -58,6 +65,30 @@ pub fn get_tags(path: &str) -> Result<Value, &str> {
     res.insert("tags".to_string(), Value::Object(tags));
 
     Ok(Value::Object(res))
+}
+
+pub fn get_album_art(path: &str) -> AlbumArt {
+    let tag = Tag::new().read_from_path(path);
+    let result = match tag {
+        Ok(t) => {
+            let picture = t.album_cover();
+            match picture {
+                Some(p) => AlbumArt {
+                    mime_type: p.mime_type.into(),
+                    data: p.data.to_owned().to_vec(),
+                },
+                None => AlbumArt {
+                    mime_type: MimeType::Png.into(),
+                    data: vec![0u8; 10],
+                },
+            }
+        }
+        Err(_) => AlbumArt {
+            mime_type: MimeType::Png.into(),
+            data: vec![0u8; 10],
+        },
+    };
+    result
 }
 
 #[test]

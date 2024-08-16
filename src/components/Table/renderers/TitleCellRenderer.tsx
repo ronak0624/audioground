@@ -1,28 +1,27 @@
 import type { CustomCellRendererProps } from "@ag-grid-community/react";
 import { type FunctionComponent } from "react";
+import AlbumArt from "./AlbumArt";
 
 export const TitleCellRenderer: FunctionComponent<CustomCellRendererProps> = ({
   value,
-  data: { image, album },
-}) => (
-  <div className="h-full flex flex-row items-center justify-center">
-    <div className="w-12 h-12 mr-4">
-      <img
-        src={`/example/inventory/${image}.png`}
-        alt={image}
-        onError={(e) => (e.currentTarget.src = "/thumbdefault.svg")}
-      />
+  data,
+}) => {
+  return (
+    <div className="h-full flex flex-row items-center justify-center">
+      <AlbumArt path={data.path} data={data.tags.thumbnail} />
+      <div>
+        <div className="text-sm og-link">{value}</div>
+        {data.album ? (
+          <div className="text-xs text-gray-500 hover:underline">
+            {data.album}
+          </div>
+        ) : (
+          <div className="text-xs text-transparent">‎</div>
+        )}
+      </div>
     </div>
-    <div>
-      <div className="text-sm og-link">{value}</div>
-      {album ? (
-        <div className="text-xs text-gray-500 hover:underline">{album}</div>
-      ) : (
-        <div className="text-xs text-transparent">‎</div>
-      )}
-    </div>
-  </div>
-);
+  );
+};
 
 export const SingleRowCellRenderer: FunctionComponent<
   CustomCellRendererProps
