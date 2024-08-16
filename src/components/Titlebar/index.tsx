@@ -3,7 +3,7 @@ import "./style.css";
 
 export default function Titlebar() {
   return (
-    <div data-tauri-drag-region className="titlebar flex">
+    <div data-tauri-drag-region className="titlebar">
       <div className="titlebar-stoplight">
         <div onClick={() => appWindow.close()} className="titlebar-close">
           <svg x="0px" y="0px" viewBox="0 0 6.4 6.4">
@@ -40,10 +40,6 @@ export default function Titlebar() {
           </svg>
         </div>
       </div>
-      <p className="mx-auto self-center pointer-events-none text-sm font-bold">
-        Audioground
-      </p>
-      <div className="w-16" />
     </div>
   );
 }

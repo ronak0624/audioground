@@ -40,9 +40,11 @@ export default function Home() {
     }
 
     const files = await chooseFolders(selected);
-    await probeFiles(files, async (entry) => {
-      const row = await makeRowFromFFProbe(entry);
-      setRows((prev) => _.uniqBy([...prev, row], "path"));
+    await probeFiles(files, (entry) => {
+      const row = makeRowFromFFProbe(entry);
+      gridRef.current?.api.applyTransaction({
+        add: [row],
+      });
     });
     setImporting(false);
   };
