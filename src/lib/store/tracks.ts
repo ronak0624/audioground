@@ -16,9 +16,12 @@ const trackStore = new Store(".tracks.dat");
  * @param key Path to track as key. Note that if a track has moved, it will be considered a new file by the tagger.
  * @param value Track to set. If editing an exisitng key, only the keys you provide will be overwritten
  */
-export async function setTrack(key: string, value: Track) {
+export async function setTrack(key: string, value: Track, merge = true) {
   const prev = await getTrack(key);
-  await trackStore.set(key, _.merge(prev, value));
+  await trackStore.set(
+    key,
+    merge ? _.merge(prev, value) : { ...prev, ...value },
+  );
   await trackStore.save();
 }
 
@@ -41,7 +44,7 @@ export async function getAllTracks() {
 export async function getUntaggedTracks() {
   const tracks = await getAllTracks();
 
-  return _.filter(tracks, ([, value]) => !value.genre);
+  return _.filter(tracks, ([, value]) => !value.instrument);
 }
 
 /**
@@ -51,7 +54,7 @@ export async function getUntaggedTracks() {
 export async function getTaggedTracks() {
   const tracks = await getAllTracks();
 
-  return _.filter(tracks, ([, value]) => !!value.genre);
+  return _.filter(tracks, ([, value]) => !!value.instrument);
 }
 
 /**
@@ -69,11 +72,16 @@ export async function deleteAllTracks() {
   return checkWithUser;
 }
 
+export async function deleteTrack(key: string) {
+  await trackStore.delete(key);
+  await trackStore.save();
+}
+
 // Export the store to json
 export async function exportDataset() {
   const tracks = _.filter(
     await trackStore.values<Track>(),
-    (track) => !!track.genre,
+    (track) => !!track.instrument,
   );
   const json = JSON.stringify(tracks, null, 2);
   const output = await dialog.save({

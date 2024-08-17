@@ -11,6 +11,7 @@ const INIT_STATE: AudioLabels = {
   duration: 0,
   bpm: "",
   genre: "",
+  genres: "",
   instrument: "",
   moods: "",
   path: "",
@@ -24,18 +25,24 @@ export type RunnerStatus =
   | "Stopped"
   | "Error";
 
-type TagRunnerProps = {
-  start: (list: string[], onComplete: () => void) => Promise<void>;
+export type TagRunnerResult = {
+  start: (
+    list: string[],
+    onComplete: () => void,
+    onStdout: (entry: AudioLabels) => void,
+  ) => Promise<void>;
   stop: () => Promise<void>;
   status: RunnerStatus;
   stdout: string[];
   stderr: string;
   progress: number;
-  currentEntry?: AudioLabels;
+  total: number;
+  currentEntry: AudioLabels;
 };
 
 const tagger = async (paths: string[]) => {
-  const sanitized = paths.map((path) => `"${path.replaceAll('"', '\\"')}"`);
+  const sanitized = paths.map((path) => `'${path.replaceAll("'", "'\\''")}'`);
+
   const root = await join(await resourceDir(), "python");
   const PYTHON = await join(root, ".venv/bin/python");
   const MAIN = await join(root, "main.py");
@@ -47,8 +54,8 @@ const tagger = async (paths: string[]) => {
   );
 };
 
-export default function useTagRunner(): TagRunnerProps {
-  const [status, setStatus] = useState<TagRunnerProps["status"]>("Stopped");
+export default function useTagRunner(): TagRunnerResult {
+  const [status, setStatus] = useState<TagRunnerResult["status"]>("Stopped");
   const [stdout, setStdout] = useState<string[]>([]);
   const [stderr, setStderr] = useState<string>("");
   const [taggerChild, setTaggerChild] = useState<Child | undefined>();
@@ -57,11 +64,16 @@ export default function useTagRunner(): TagRunnerProps {
   const progress = useRef(0);
   const total = useRef(0);
 
-  const start = async (list: string[], onComplete = () => {}) => {
+  // TODO: Create shell sidecar class
+  const start = async (
+    list: string[],
+    onComplete = () => {},
+    onStdout = (_: AudioLabels) => {},
+  ) => {
     console.log(list);
     setStatus("Initializing");
     total.current = list.length;
-    progress.current = 0.01 / total.current;
+    progress.current = 0.01;
 
     try {
       const instance = await tagger(list);
@@ -76,12 +88,13 @@ export default function useTagRunner(): TagRunnerProps {
         }
 
         if (!line || line[0] !== "{") return;
+
         setStatus("Running");
         setStdout((prev) => [...prev, line]);
         const entry: AudioLabels = JSON.parse(line);
         console.log(entry);
-
-        progress.current = progress.current + 1 / total.current;
+        onStdout(entry);
+        progress.current = Math.round(progress.current + 1);
         setTrack(entry.path, entry);
         setCurrentEntry(entry);
       });
@@ -95,7 +108,7 @@ export default function useTagRunner(): TagRunnerProps {
       instance.on("close", () => {
         console.log("closed");
         progress.current = 0;
-        toast.success(`Done tagging ${total.current} files.`);
+
         onComplete();
         setStatus("Stopped");
       });
@@ -118,6 +131,9 @@ export default function useTagRunner(): TagRunnerProps {
     console.log("stopping");
     await taggerChild?.kill();
     setStatus("Stopped");
+    toast.warning(
+      `Tagging stopped with ${total.current - progress.current} files left.`,
+    );
     progress.current = 0;
   };
 
@@ -128,6 +144,7 @@ export default function useTagRunner(): TagRunnerProps {
     stdout,
     stderr,
     progress: progress.current,
+    total: total.current,
     currentEntry,
   };
 }

@@ -3,26 +3,27 @@ import { getAllTracks } from "@lib/store/tracks";
 import { ProbeResult, Track } from "@lib/types";
 import { TrackStatus } from "@/components/Table/cols";
 import { getBasename } from "@lib/utils/fs";
+import { getThumbnail } from "@lib/store/thumbnails";
 
 export type TrackRow = Track & {
-  id: number;
+  id: string;
   status: TrackStatus;
   title: string;
   filename: string;
 };
 
-export function makeRow(path: string, item: Track, i: number): TrackRow {
+export function makeRow(path: string, item: Track): TrackRow {
   let status: TrackStatus = "untagged";
-  if (!_.isEmpty(item.genre)) {
+  if (!_.isEmpty(item.instrument)) {
     status = "completed";
   }
   let filename = getBasename(path);
   let title = item.tags?.title ?? "";
 
   return {
-    ...item.tags,
     ...item,
-    id: i,
+    ...item.tags,
+    id: path,
     status,
     title: title !== "" ? title : filename,
     filename,
@@ -32,9 +33,17 @@ export function makeRow(path: string, item: Track, i: number): TrackRow {
 
 export default async function getRows() {
   const tracks = await getAllTracks();
-  return _.map(tracks, ([path, item], i) => makeRow(path, item, i));
+  Promise.all(
+    _.forEach(tracks, async ([path, item]) => {
+      let thumbnail = await getThumbnail(path);
+      if (thumbnail && item.tags) {
+        Object.assign(item.tags, { thumbnail });
+      }
+    }),
+  );
+  return _.map(tracks, ([path, item]) => makeRow(path, item));
 }
 
-export function makeRowFromFFProbe(info: ProbeResult, i: number): TrackRow {
-  return makeRow(info.path, info, i);
+export function makeRowFromFFProbe(info: ProbeResult): TrackRow {
+  return makeRow(info.path, info);
 }

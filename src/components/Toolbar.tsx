@@ -5,10 +5,14 @@ import {
   StopCircleIcon,
   TagIcon,
   Trash2Icon,
+  RefreshCcw,
+  AudioLines,
 } from "lucide-react";
+import Titlebar from "./Titlebar";
 
 type ToolbarProps = {
   isRunning: boolean;
+  isImporting: boolean;
   onImport: () => void;
   onAutotag: () => void;
   onExport: () => void;
@@ -18,6 +22,7 @@ type ToolbarProps = {
 
 export default function Toolbar({
   isRunning,
+  isImporting,
   onImport,
   onAutotag,
   onExport,
@@ -27,10 +32,20 @@ export default function Toolbar({
   const isDepsInstalled = !!sessionStorage.getItem("venv");
 
   return (
-    <div className="flex items-center w-full justify-between">
+    <div
+      data-tauri-drag-region
+      className="flex items-center w-full justify-between relative"
+    >
       <div className="flex items-center gap-5">
+        <div className="self-start">
+          <Titlebar />
+        </div>
         <Button onClick={onImport} className="btn text-nowrap text-ellipsis">
-          <PlusCircleIcon className="icon" />
+          {isImporting ? (
+            <RefreshCcw className="icon animate-spin" />
+          ) : (
+            <PlusCircleIcon className="icon" />
+          )}
           <span>Import</span>
         </Button>
         {isDepsInstalled && (
@@ -40,7 +55,7 @@ export default function Toolbar({
             className="btn text-nowrap text-ellipsis"
           >
             <TagIcon className="icon" />
-            <span>Run Autotag</span>
+            <span>Autotag</span>
           </Button>
         )}
         <Button
@@ -51,6 +66,10 @@ export default function Toolbar({
           <ArrowDownToLineIcon className="icon" />
           <span>Export</span>
         </Button>
+      </div>
+      <div className="absolute min-w-min left-1/2 right-1/2 -translate-x-1/2 flex gap-2  pointer-events-none">
+        <AudioLines className="text-foreground" />
+        <p className="text-">audioground</p>
       </div>
       <div className="flex items-center gap-5">
         {isRunning && (

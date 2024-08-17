@@ -80,10 +80,10 @@
 }
 
 @layer components {
-  .btn > .icon {
+  .icon {
     @apply mr-2 h-4 w-4;
   }
-  .btn > .icon:only-child {
+  .icon:only-child {
     @apply mr-0;
   }
 }

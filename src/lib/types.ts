@@ -29,6 +29,7 @@ export interface AudioLabels {
   duration: number;
   bpm: string;
   genre: string;
+  genres: string;
   instrument: string;
   moods: string;
   path: string;
@@ -36,3 +37,8 @@ export interface AudioLabels {
 }
 
 export type Track = Partial<ProbeResult> & Partial<AudioLabels>;
+
+export type AlbumArtRust = {
+  mime_type: string;
+  data: Uint8Array;
+};

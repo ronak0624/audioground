@@ -1,24 +1,28 @@
 import { useState, useEffect } from "react";
-import { Track } from "@lib/types";
-import getRows from "@/components/Table/rows";
+import getRows, { TrackRow } from "@/components/Table/rows";
 import _ from "lodash";
 
 export default function useRows(): [
-  Track[],
-  React.Dispatch<React.SetStateAction<Track[]>>,
+  TrackRow[],
+  React.Dispatch<React.SetStateAction<TrackRow[]>>,
   () => void,
+  boolean,
 ] {
-  const [rows, setRows] = useState<Track[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [rows, setRows] = useState<TrackRow[]>([]);
 
   useEffect(() => {
-    refreshRows();
+    (async () => {
+      await refreshRows();
+    })();
   }, []);
 
-  const refreshRows = () => {
-    getRows().then((rows) => {
-      setRows(rows);
-    });
+  const refreshRows = async () => {
+    setLoading(true);
+    const rows = await getRows();
+    setRows(rows);
+    setLoading(false);
   };
 
-  return [rows, setRows, refreshRows];
+  return [rows, setRows, refreshRows, loading];
 }

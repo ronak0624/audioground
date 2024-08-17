@@ -10,17 +10,19 @@ import json
 import requests
 import json
 import numpy as np
+
+print(f"<|Loading librosa...|>", flush=True)
 import librosa
 
+print(f"<|Loading essentia...|>", flush=True)
 from essentia.standard import (
     MonoLoader,
     TensorflowPredictEffnetDiscogs,
     TensorflowPredict2D,
     MetadataReader,
-    TempoCNN,
 )
 
-# TODO: General case for model that uses manifest to initialize the correct essentia algorithm
+# TODO: Create general model loader to allow users to pick and choose models
 
 DEFAULT_MODELS = {
     "genre": "genre_discogs400-discogs-effnet-1",
@@ -115,7 +117,8 @@ class AudioFeatures:
         )
         predictions = genre_model(ebds)
         parsed, _ = self._parse_outputs(predictions, genre_classes)
-        return ", ".join(parsed).replace("---", ", ").split(", ")
+        # Parse flat list of genres from Genre---Subgenre
+        return list(set(", ".join(parsed).replace("---", ", ").split(", ")))
 
     def get_mood(self, ebds):
         mood_path = self.models["moods"].get_path()
@@ -190,5 +193,5 @@ class AudioFeatures:
         return res
 
     def run(self):
-        print("starting")
+        print("<|Loading models...|>", flush=True)
         return [self.get_audio_features(path) for path in self.paths]

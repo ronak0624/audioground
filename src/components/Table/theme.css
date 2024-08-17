@@ -23,6 +23,11 @@ body {
   background-color: transparent;
 }
 
+.ag-theme-quartz .ag-overlay-loading-wrapper,
+.ag-theme-quartz-dark .ag-overlay-loading-wrapper {
+  background-color: var(--background);
+}
+
 .ag-theme-quartz .ag-body-viewport,
 .ag-theme-quartz-dark .ag-body-viewport {
   padding-top: 8px;

@@ -1,26 +1,23 @@
 import { FunctionComponent } from "react";
 import type { CustomCellRendererProps } from "ag-grid-react";
+import { Badge } from "@/components/ui/badge";
 
-const Badge = ({ children }: any) => (
-  <span className="text-xs px-2 py-1 rounded-full bg-secondary">
-    {children}
-  </span>
-);
-
-const MultiTagRenderer: FunctionComponent<CustomCellRendererProps> = ({
+const MultiTagRenderer: FunctionComponent<Partial<CustomCellRendererProps>> = ({
   value,
 }) => {
-  if (typeof value !== "object" || !value)
+  if (typeof value !== "object" || !value || value.length === 0)
     return (
-      <Badge variant="soft" intent="info">
+      <Badge variant="secondary" className="text-muted-foreground">
         N/A
       </Badge>
     );
 
   return (
-    <div className="flex h-full items-center gap-2 w-full overflow-x-auto">
+    <div className="flex h-full items-center gap-1 w-full">
       {value?.map((v: string, i: number) => (
-        <Badge key={`${value[0]}-${v}-${i}`}>{v}</Badge>
+        <Badge variant="outline" className="px-2" key={`${value[0]}-${v}-${i}`}>
+          {v}
+        </Badge>
       ))}
     </div>
   );
