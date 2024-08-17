@@ -21,7 +21,7 @@ body {
 .ag-theme-quartz .ag-row,
 .ag-theme-quartz-dark .ag-row {
   background-color: transparent;
-  font-family: "worksans", "worksansitalic", sans-serif;
+  font-family: "ad-font", "ad-font-italic", sans-serif;
 }
 
 .ag-theme-quartz .ag-overlay-loading-wrapper,
