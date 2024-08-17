@@ -1,10 +1,15 @@
 import _ from "lodash";
 import { open } from "@tauri-apps/api/dialog";
+import { toast } from "sonner";
+import { useRef, useState } from "react";
+import { AgGridReact } from "@ag-grid-community/react";
+import useOnMount from "@lib/hooks/useOnMount";
+import { listen } from "@tauri-apps/api/event";
 
 import Table from "@/components/Table";
 import Toolbar from "@/components/Toolbar";
 import useRows from "@lib/hooks/useRows";
-import { chooseFolders, probeFiles } from "@lib/utils/fs";
+import RunStatus from "@/components/RunStatus";
 
 import { colConfig } from "@/components/Table/cols";
 import { makeRow, makeRowFromFFProbe } from "@/components/Table/rows";
@@ -15,11 +20,9 @@ import {
   getTrack,
   getUntaggedTracks,
 } from "@lib/store/tracks";
-import { toast } from "sonner";
-import RunStatus from "@/components/RunStatus";
-import { useRef, useState } from "react";
+import { chooseFolders, probeFiles } from "@lib/utils/fs";
+
 import { AudioLabels } from "@lib/types";
-import { AgGridReact } from "@ag-grid-community/react";
 
 export default function Home() {
   const [rows, setRows, refreshRows, rowsLoading] = useRows();
@@ -27,6 +30,27 @@ export default function Home() {
   const [importing, setImporting] = useState(false);
 
   const gridRef = useRef<AgGridReact>(null);
+
+  useOnMount(() => {
+    listen(
+      "tauri://file-drop",
+      async ({ payload: payload }: { payload: string }) => {
+        setImporting(true);
+        await importFiles(payload);
+      },
+    );
+  });
+
+  const importFiles = async (selected: string | string[]) => {
+    const files = await chooseFolders(selected);
+    await probeFiles(files, (entry) => {
+      const row = makeRowFromFFProbe(entry);
+      gridRef.current?.api.applyTransaction({
+        update: [row],
+      });
+    });
+    setImporting(false);
+  };
 
   const handleImport = async () => {
     setImporting(true);
@@ -38,15 +62,7 @@ export default function Home() {
       setImporting(false);
       return;
     }
-
-    const files = await chooseFolders(selected);
-    await probeFiles(files, (entry) => {
-      const row = makeRowFromFFProbe(entry);
-      gridRef.current?.api.applyTransaction({
-        add: [row],
-      });
-    });
-    setImporting(false);
+    await importFiles(selected);
   };
 
   const handleAutotag = async () => {
