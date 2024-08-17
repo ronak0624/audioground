@@ -20,7 +20,7 @@ const AlbumArt = (props: { path: string; data: string }) => {
     <div className="w-12 h-12 mr-4">
       <img
         ref={ref}
-        src={props.data}
+        src={props.data ?? "/thumbdefault.svg"}
         className="rounded-sm w-12 h-12 mr-4"
         alt="album cover"
         onError={(e) => (e.currentTarget.src = "/thumbdefault.svg")}

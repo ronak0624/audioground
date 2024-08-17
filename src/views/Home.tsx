@@ -23,6 +23,7 @@ import {
 import { chooseFolders, probeFiles } from "@lib/utils/fs";
 
 import { AudioLabels } from "@lib/types";
+import Loader from "@/components/Loader";
 
 export default function Home() {
   const [rows, setRows, refreshRows, rowsLoading] = useRows();
@@ -45,8 +46,8 @@ export default function Home() {
     const files = await chooseFolders(selected);
     await probeFiles(files, (entry) => {
       const row = makeRowFromFFProbe(entry);
-      gridRef.current?.api.applyTransaction({
-        update: [row],
+      gridRef.current?.api.applyTransactionAsync({
+        add: [row],
       });
     });
     setImporting(false);
@@ -107,7 +108,10 @@ export default function Home() {
   };
 
   return (
-    <div data-tauri-drag-region className="flex flex-col gap-5 h-full p-5 mb-5">
+    <div
+      data-tauri-drag-region
+      className="flex flex-col gap-5 h-full p-5 mb-5 relative"
+    >
       <Toolbar
         isRunning={runner.status === "Running"}
         onImport={handleImport}
@@ -118,12 +122,12 @@ export default function Home() {
         isImporting={importing}
       />
       <RunStatus {...runner} />
-      <Table
-        ref={gridRef}
-        cols={colConfig}
-        rows={rows}
-        loading={rowsLoading || importing}
-      />
+      <Table ref={gridRef} cols={colConfig} rows={rows} loading={rowsLoading} />
+      {importing && (
+        <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center pointer-events-none">
+          <Loader />
+        </div>
+      )}
     </div>
   );
 }
