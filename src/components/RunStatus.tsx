@@ -28,7 +28,7 @@ const StatusText = (props: RunStatusProps) => {
       return (
         <div className="flex flex-col">
           <InnerText loading>
-            <div className="font-bold">
+            <div className="font-medium">
               {props.progress} / {props.total}{" "}
             </div>{" "}
             <div>{props.currentEntry.path}</div>

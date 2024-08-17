@@ -10,11 +10,9 @@ export const TitleCellRenderer: FunctionComponent<CustomCellRendererProps> = ({
     <div className="h-full flex flex-row items-center justify-center">
       <AlbumArt path={data.path} data={data.tags.thumbnail} />
       <div>
-        <div className="text-sm og-link">{value}</div>
+        <div className="text-sm og-link font-medium">{value}</div>
         {data.album ? (
-          <div className="text-xs text-gray-500 hover:underline">
-            {data.album}
-          </div>
+          <div className="text-xs text-gray-500">{data.album}</div>
         ) : (
           <div className="text-xs text-transparent">‎</div>
         )}
