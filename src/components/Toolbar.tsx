@@ -6,7 +6,7 @@ import {
   TagIcon,
   Trash2Icon,
   RefreshCcw,
-  AudioLines,
+  Disc3,
 } from "lucide-react";
 import Titlebar from "./Titlebar";
 
@@ -68,7 +68,7 @@ export default function Toolbar({
         </Button>
       </div>
       <div className="absolute min-w-min left-1/2 right-1/2 -translate-x-1/2 flex gap-2  pointer-events-none">
-        <AudioLines className="text-foreground" />
+        <Disc3 className="text-foreground" />
         <p className="text-">audioground</p>
       </div>
       <div className="flex items-center gap-5">
