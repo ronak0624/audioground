@@ -21,7 +21,7 @@ import {
 } from "react";
 import { debounce } from "lodash";
 import { buttonVariants } from "../ui/button";
-import { ChevronsLeftRight, ChevronsRightLeft } from "lucide-react";
+import { ChevronsLeftRight, ChevronsRightLeft, FileAudio } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { TrackRow } from "./rows";
 import Loader from "../Loader";
@@ -65,10 +65,9 @@ const TableControlButton = (props: TableControlButtonProps) => {
 
 const EmptyState = () => {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center">
-      <p className="text-muted-foreground">
-        No tracks yet. Import some from above!
-      </p>
+    <div className="flex-1 flex flex-col gap-5 items-center justify-center text-muted-foreground">
+      <FileAudio size={64} />
+      <p>Drag some files here!</p>
     </div>
   );
 };

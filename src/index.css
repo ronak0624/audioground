@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "worksans";
+  src: url("/WorkSans/WorkSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: "worksansitalic";
+  src: url("/WorkSans/WorkSans-Italic.ttf");
+}
+
+html {
+  font-family: "worksans", "worksansitalic", "Avenir-Next", sans-serif !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

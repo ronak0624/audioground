@@ -5,6 +5,8 @@ import { trackStore } from "@lib/store/tracks";
 import makeThumbnail from "./thumbnail";
 import { thumbnails } from "@lib/store/thumbnails";
 
+import { filter } from "lodash";
+
 const EXTENSIONS = [
   ".mp3",
   ".wav",
@@ -42,7 +44,7 @@ export const chooseFolders = async (selected: string | string[]) => {
     let res = (await listDir(dir)) ?? [];
     files = [...files, ...res];
   }
-  return files;
+  return filter(files, (f) => !f.startsWith("."));
 };
 
 export async function probe(path: string): Promise<ProbeResult> {
