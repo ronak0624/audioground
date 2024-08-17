@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "worksans";
-  src: url("/WorkSans/WorkSans-Regular.ttf");
+  font-family: "ad-font";
+  src: url("/Onest/Onest-Regular.ttf");
 }
 
 @font-face {
-  font-family: "worksansitalic";
-  src: url("/WorkSans/WorkSans-Italic.ttf");
+  font-family: "ad-font-italic";
+  src: url("/Onest/Onest-Italic.ttf");
 }
 
 html {
-  font-family: "worksans", "worksansitalic", "Avenir-Next", sans-serif !important;
+  font-family: "ad-font", "ad-font-italic", "Avenir-Next", sans-serif !important;
 }
 
 @layer base {
