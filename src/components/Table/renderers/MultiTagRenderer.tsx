@@ -7,7 +7,7 @@ const MultiTagRenderer: FunctionComponent<Partial<CustomCellRendererProps>> = ({
 }) => {
   if (typeof value !== "object" || !value || value.length === 0)
     return (
-      <Badge variant="secondary" className="text-muted-foreground">
+      <Badge variant="secondary" className="text-muted-foreground font-medium">
         N/A
       </Badge>
     );

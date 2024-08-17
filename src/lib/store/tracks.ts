@@ -6,6 +6,7 @@ import { documentDir, join } from "@tauri-apps/api/path";
 import { fs } from "@tauri-apps/api";
 
 import _ from "lodash";
+import { deleteAllThumbnails, deleteThumbnail } from "./thumbnails";
 
 // TODO: Don't use raw filepath as hash
 
@@ -67,6 +68,7 @@ export async function deleteAllTracks() {
   );
   if (checkWithUser) {
     await trackStore.clear();
+    await deleteAllThumbnails();
     await trackStore.save();
   }
   return checkWithUser;
@@ -74,6 +76,7 @@ export async function deleteAllTracks() {
 
 export async function deleteTrack(key: string) {
   await trackStore.delete(key);
+  await deleteThumbnail(key);
   await trackStore.save();
 }
 

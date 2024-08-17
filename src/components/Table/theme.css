@@ -21,6 +21,7 @@ body {
 .ag-theme-quartz .ag-row,
 .ag-theme-quartz-dark .ag-row {
   background-color: transparent;
+  font-family: "inter", "Inter-Italic", sans-serif;
 }
 
 .ag-theme-quartz .ag-overlay-loading-wrapper,

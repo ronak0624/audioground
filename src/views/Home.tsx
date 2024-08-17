@@ -23,12 +23,13 @@ import {
 import { chooseFolders, probeFiles } from "@lib/utils/fs";
 
 import { AudioLabels } from "@lib/types";
-import Loader from "@/components/Loader";
+import { LightweightLoader } from "@/components/Loader";
 
 export default function Home() {
   const [rows, setRows, refreshRows, rowsLoading] = useRows();
   const runner = useTagRunner();
   const [importing, setImporting] = useState(false);
+  const [filesFound, setFilesFound] = useState(0);
 
   const gridRef = useRef<AgGridReact>(null);
 
@@ -44,6 +45,7 @@ export default function Home() {
 
   const importFiles = async (selected: string | string[]) => {
     const files = await chooseFolders(selected);
+    setFilesFound(files.length);
     await probeFiles(files, (entry) => {
       const row = makeRowFromFFProbe(entry);
       gridRef.current?.api.applyTransactionAsync({
@@ -51,6 +53,7 @@ export default function Home() {
       });
     });
     setImporting(false);
+    setFilesFound(0);
   };
 
   const handleImport = async () => {
@@ -124,8 +127,13 @@ export default function Home() {
       <RunStatus {...runner} />
       <Table ref={gridRef} cols={colConfig} rows={rows} loading={rowsLoading} />
       {importing && (
-        <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center pointer-events-none">
-          <Loader />
+        <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center pointer-events-none ">
+          <div className="flex items-center justify-center gap-5 p-5 shadow-lg rounded-lg bg-primary-foreground">
+            <LightweightLoader />
+            <p className="text-sm font-medium">
+              Importing {filesFound} files...
+            </p>
+          </div>
         </div>
       )}
     </div>

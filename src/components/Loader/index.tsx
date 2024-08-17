@@ -1,4 +1,6 @@
+import { Disc3 } from "lucide-react";
 import "./styles.css";
+import { twMerge } from "tailwind-merge";
 
 export default function Loader() {
   return (
@@ -58,5 +60,11 @@ export function FullScreenLoader() {
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <Loader />
     </div>
+  );
+}
+
+export function LightweightLoader(props: { className?: string }) {
+  return (
+    <Disc3 className={twMerge("w-16 h-16 animate-spin", props.className)} />
   );
 }
