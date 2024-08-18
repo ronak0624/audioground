@@ -62,6 +62,11 @@
             "name": "sh",
             "cmd": "sh",
             "args": true
+          },
+          {
+            "name": "kill",
+            "cmd": "kill",
+            "args": true
           }
         ]
       }
