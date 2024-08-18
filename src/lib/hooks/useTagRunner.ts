@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { Command } from "@tauri-apps/api/shell";
-import { join, resourceDir } from "@tauri-apps/api/path";
 import { AudioLabels } from "@lib/types";
 import { setTrack } from "@lib/store/tracks";
 import { toast } from "sonner";
+import { labeler } from "@lib/config/cmd";
 
 const INIT_STATE: AudioLabels = {
   file_extension: "",
@@ -40,20 +40,6 @@ export type TagRunnerResult = {
   currentEntry: AudioLabels;
 };
 
-const tagger = async (paths: string[]) => {
-  const sanitized = paths.map((path) => `'${path.replaceAll("'", "'\\''")}'`);
-
-  const root = await join(await resourceDir(), "python");
-  const PYTHON = await join(root, ".venv/bin/python");
-  const MAIN = await join(root, "main.py");
-
-  return new Command(
-    "sh",
-    ["-c", `${PYTHON} ${MAIN} --paths ${sanitized.join(" ")} & echo "PID:$!"`],
-    { cwd: root },
-  );
-};
-
 export default function useTagRunner(): TagRunnerResult {
   const [status, setStatus] = useState<TagRunnerResult["status"]>("Stopped");
   const [stdout, setStdout] = useState<string[]>([]);
@@ -76,7 +62,7 @@ export default function useTagRunner(): TagRunnerResult {
     progress.current = 0.01;
 
     try {
-      const instance = await tagger(list);
+      const instance = await labeler(list);
       instance.stdout.on("data", (line: string) => {
         if (line.startsWith("PID:")) {
           try {
