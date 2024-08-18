@@ -1,9 +1,10 @@
 # Class to take list of paths as input and return list of AudioFeatures objects
 print(f"<|Loading labeler...|>", flush=True)
 import os
-from essentia import log
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+from essentia import log
 log.infoActive = False
 
 import json
