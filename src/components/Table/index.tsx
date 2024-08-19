@@ -1,5 +1,5 @@
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-import type { ColDef, GetRowIdParams } from "@ag-grid-community/core";
+import type { ColDef, GetRowIdParams, IRowNode } from "@ag-grid-community/core";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { twMerge } from "tailwind-merge";
 import { AgGridReact } from "@ag-grid-community/react";
@@ -19,12 +19,14 @@ import {
   forwardRef,
   useCallback,
 } from "react";
-import { debounce } from "lodash";
+import _, { debounce } from "lodash";
 import { buttonVariants } from "../ui/button";
 import { ChevronsLeftRight, ChevronsRightLeft, FileAudio } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { TrackRow } from "./rows";
 import Loader from "../Loader";
+import ContextMenu from "../TableContextMenu";
+import { batchDeleteTracks } from "@lib/store/tracks";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -77,10 +79,11 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
   ref,
 ) {
   const [quickFilterText, setQuickFilterText] = useState<string>("");
+  const [selectedRows, setSelectedRows] = useState<IRowNode[]>([]);
   const { isDarkMode } = useDarkMode();
   const tableClass = isDarkMode ? `${theme}-dark` : theme;
 
-  const gridRef = useRef<AgGridReact>(null);
+  const gridRef = useRef<AgGridReact<TrackRow>>(null);
 
   // Attach the forwarded ref to the gridRef
   useImperativeHandle(ref, () => gridRef.current as AgGridReact);
@@ -108,6 +111,28 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
     [],
   );
 
+  const getSelectedRows = () => {
+    if (gridRef.current?.api) {
+      const selectedNodes = gridRef.current.api.getSelectedNodes();
+      setSelectedRows(selectedNodes);
+    }
+  };
+
+  const onCopyPath = async () => {
+    const paths = _.compact(_.map(selectedRows, "data.path"));
+    await navigator.clipboard.writeText(paths.join("\n"));
+  };
+
+  const onDelete = async () => {
+    const api = gridRef.current?.api;
+    if (!api) return;
+
+    const rows: TrackRow[] = gridRef.current?.api.getSelectedRows();
+    const paths = _.compact(_.map(rows, "path"));
+    await batchDeleteTracks(paths);
+    api.applyTransaction({ remove: rows });
+  };
+
   return (
     <div className="flex-1 flex flex-col gap-2">
       <div className="flex flex-row items-center w-full gap-2">
@@ -120,19 +145,28 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
         </TableControlButton>
       </div>
       <div className={twMerge(tableClass, "flex-1")}>
-        <AgGridReact
-          ref={gridRef}
-          className="bg-transparent"
-          columnDefs={cols}
-          rowData={rows}
-          rowBuffer={40}
-          rowHeight={80}
-          loading={loading}
-          noRowsOverlayComponent={EmptyState}
-          quickFilterText={quickFilterText}
-          loadingOverlayComponent={Loader}
-          getRowId={getRowId}
-        />
+        <ContextMenu
+          onMount={getSelectedRows}
+          onDelete={onDelete}
+          onCopyPath={onCopyPath}
+          selectedRows={selectedRows}
+        >
+          <AgGridReact
+            ref={gridRef}
+            className="bg-transparent"
+            columnDefs={cols}
+            rowData={rows}
+            rowBuffer={40}
+            rowHeight={80}
+            rowSelection="multiple"
+            // rowMultiSelectWithClick
+            loading={loading}
+            noRowsOverlayComponent={EmptyState}
+            quickFilterText={quickFilterText}
+            loadingOverlayComponent={Loader}
+            getRowId={getRowId}
+          />
+        </ContextMenu>
       </div>
     </div>
   );
