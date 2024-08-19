@@ -1,5 +1,9 @@
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-import type { ColDef, GetRowIdParams } from "@ag-grid-community/core";
+import type {
+  ColDef,
+  GetRowIdParams,
+  RowDoubleClickedEvent,
+} from "@ag-grid-community/core";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { twMerge } from "tailwind-merge";
 import { AgGridReact } from "@ag-grid-community/react";
@@ -25,6 +29,7 @@ import { ChevronsLeftRight, ChevronsRightLeft, FileAudio } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { TrackRow } from "./rows";
 import Loader from "../Loader";
+import { useAudio } from "@lib/providers/AudioProvider";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -78,6 +83,7 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
 ) {
   const [quickFilterText, setQuickFilterText] = useState<string>("");
   const { isDarkMode } = useDarkMode();
+  const { play } = useAudio();
   const tableClass = isDarkMode ? `${theme}-dark` : theme;
 
   const gridRef = useRef<AgGridReact>(null);
@@ -108,6 +114,10 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
     [],
   );
 
+  const handleRowDoubleClicked = async (e: RowDoubleClickedEvent<TrackRow>) => {
+    await play(e.data);
+  };
+
   return (
     <div className="flex-1 flex flex-col gap-2">
       <div className="flex flex-row items-center w-full gap-2">
@@ -129,6 +139,9 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
           rowHeight={80}
           loading={loading}
           noRowsOverlayComponent={EmptyState}
+          suppressCellFocus
+          onRowDoubleClicked={handleRowDoubleClicked}
+          suppressClickEdit
           quickFilterText={quickFilterText}
           loadingOverlayComponent={Loader}
           getRowId={getRowId}

@@ -24,6 +24,7 @@ import { chooseFolders, probeFiles } from "@lib/utils/fs";
 
 import { AudioLabels } from "@lib/types";
 import { LightweightLoader } from "@/components/Loader";
+import AudioPlayer from "@/components/AudioPlayer";
 
 export default function Home() {
   const [rows, setRows, refreshRows, rowsLoading] = useRows();
@@ -126,6 +127,7 @@ export default function Home() {
       />
       <RunStatus {...runner} />
       <Table ref={gridRef} cols={colConfig} rows={rows} loading={rowsLoading} />
+      <AudioPlayer />
       {importing && (
         <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center pointer-events-none ">
           <div className="z-50 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none flex gap-5 items-center">
