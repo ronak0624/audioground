@@ -11,7 +11,6 @@ export const create_virtual_environment = async () => {
   const appData = await appDataDir();
 
   const cmd = [
-    // `rsync -a --filter="P ${venv}" "${resources}" "${appData}"`,
     `cp -R "${resources}" "${appData}"`,
     `python3 -m venv "${venv}"`,
     `"${pip}" install -r "${requirements}"`,

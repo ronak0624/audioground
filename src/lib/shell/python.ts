@@ -8,7 +8,7 @@ async function createVenv() {
 
   const { stdout, stderr } = await cmd.execute();
   if (stdout) console.log(stdout);
-  if (stderr) throw new Error(stderr);
+  if (stderr) console.warn(stderr);
 }
 
 export default function usePythonVenv() {
