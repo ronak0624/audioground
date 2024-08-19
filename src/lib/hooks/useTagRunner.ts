@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
-import { Child, Command } from "@tauri-apps/api/shell";
-import { join, resourceDir } from "@tauri-apps/api/path";
+import { Command } from "@tauri-apps/api/shell";
 import { AudioLabels } from "@lib/types";
 import { setTrack } from "@lib/store/tracks";
 import { toast } from "sonner";
+import { labeler } from "@lib/config/cmd";
 
 const INIT_STATE: AudioLabels = {
   file_extension: "",
@@ -40,25 +40,11 @@ export type TagRunnerResult = {
   currentEntry: AudioLabels;
 };
 
-const tagger = async (paths: string[]) => {
-  const sanitized = paths.map((path) => `'${path.replaceAll("'", "'\\''")}'`);
-
-  const root = await join(await resourceDir(), "python");
-  const PYTHON = await join(root, ".venv/bin/python");
-  const MAIN = await join(root, "main.py");
-
-  return new Command(
-    "sh",
-    ["-c", `${PYTHON} ${MAIN} --paths ${sanitized.join(" ")}`],
-    { cwd: root },
-  );
-};
-
 export default function useTagRunner(): TagRunnerResult {
   const [status, setStatus] = useState<TagRunnerResult["status"]>("Stopped");
   const [stdout, setStdout] = useState<string[]>([]);
   const [stderr, setStderr] = useState<string>("");
-  const [taggerChild, setTaggerChild] = useState<Child | undefined>();
+  const [PID, setPID] = useState<number | undefined>();
   const [currentEntry, setCurrentEntry] = useState<AudioLabels>(INIT_STATE);
 
   const progress = useRef(0);
@@ -76,8 +62,18 @@ export default function useTagRunner(): TagRunnerResult {
     progress.current = 0.01;
 
     try {
-      const instance = await tagger(list);
+      const instance = await labeler(list);
       instance.stdout.on("data", (line: string) => {
+        if (line.startsWith("PID:")) {
+          try {
+            const pid = parseInt(line.split(":")[1]);
+            setPID(pid);
+          } catch (e) {
+            console.error(e);
+          }
+          return;
+        }
+
         if (line.startsWith("<|")) {
           const message = line.slice(2, -3);
           if (message.startsWith("Downloading")) {
@@ -120,7 +116,6 @@ export default function useTagRunner(): TagRunnerResult {
 
       const child = await instance.spawn();
       console.log(child.pid);
-      setTaggerChild(child);
     } catch (e) {
       console.error(e);
       setStatus("Error");
@@ -128,8 +123,16 @@ export default function useTagRunner(): TagRunnerResult {
   };
 
   const stop = async () => {
+    if (!PID) return;
     console.log("stopping");
-    await taggerChild?.kill();
+    const { stderr, stdout } = await new Command("kill", [
+      "-9",
+      `${PID}`,
+    ]).execute();
+
+    if (stderr) console.error(stderr);
+    if (stdout) console.log(stdout);
+
     setStatus("Stopped");
     toast.warning(
       `Tagging stopped with ${total.current - progress.current} files left.`,

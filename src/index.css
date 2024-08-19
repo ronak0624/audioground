@@ -4,16 +4,11 @@
 
 @font-face {
   font-family: "ad-font";
-  src: url("/Onest/Onest-Regular.ttf");
-}
-
-@font-face {
-  font-family: "ad-font-italic";
-  src: url("/Onest/Onest-Italic.ttf");
+  src: url("/Onest/Onest.ttf");
 }
 
 html {
-  font-family: "ad-font", "ad-font-italic", "Avenir-Next", sans-serif !important;
+  font-family: "ad-font", "Avenir-Next", sans-serif !important;
 }
 
 @layer base {

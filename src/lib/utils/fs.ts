@@ -5,8 +5,6 @@ import { trackStore } from "@lib/store/tracks";
 import makeThumbnail from "./thumbnail";
 import { thumbnails } from "@lib/store/thumbnails";
 
-import { filter } from "lodash";
-
 const EXTENSIONS = [
   ".mp3",
   ".wav",
@@ -44,7 +42,9 @@ export const chooseFolders = async (selected: string | string[]) => {
     let res = (await listDir(dir)) ?? [];
     files = [...files, ...res];
   }
-  return filter(files, (f) => !f.startsWith("."));
+  let basenames = files.filter((f) => !getBasename(f).startsWith("."));
+
+  return basenames;
 };
 
 export async function probe(path: string): Promise<ProbeResult> {
@@ -76,8 +76,6 @@ export async function probeFiles(
   await thumbnails.save();
 }
 
-export function getBasename(url: string): string {
-  const normalizedPath = url.replace(/\\/g, "/");
-  const segments = normalizedPath.split("/");
-  return segments.pop() || "";
+export function getBasename(path: string): string {
+  return path.split(/[\\/]/).pop() ?? "";
 }
