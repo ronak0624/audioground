@@ -27,7 +27,7 @@ const AudioPlayer = () => {
   return (
     <div
       className={twMerge(
-        "w-full px-5 flex items-center bg-accent rounded-b-xl",
+        "w-full px-5 flex items-center bg-transparent rounded-b-xl",
         isHidden,
       )}
     >
