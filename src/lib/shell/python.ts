@@ -1,27 +1,14 @@
 import { useState } from "react";
-import { ChildProcess, Command } from "@tauri-apps/api/shell";
 import useOnMount from "../hooks/useOnMount";
-import { resolveResource } from "@tauri-apps/api/path";
 
-const shell = async (cmd: string): Promise<ChildProcess> => {
-  const proc = await new Command("sh", ["-c", cmd], {
-    cwd: await resolveResource("python"),
-  }).execute();
-
-  console.log(proc.stdout);
-  if (proc.code !== 0) {
-    console.error(proc.stderr);
-    throw new Error(proc.stderr);
-  }
-  return proc;
-};
+import { create_virtual_environment } from "@lib/config/cmd";
 
 async function createVenv() {
-  const PYTHON = await resolveResource("python");
+  const cmd = await create_virtual_environment();
 
-  await shell(
-    `python3 -m venv ${PYTHON}/.venv && ${PYTHON}/.venv/bin/pip install -r ${PYTHON}/requirements.txt`,
-  );
+  const { stdout, stderr } = await cmd.execute();
+  if (stdout) console.log(stdout);
+  if (stderr) console.warn(stderr);
 }
 
 export default function usePythonVenv() {

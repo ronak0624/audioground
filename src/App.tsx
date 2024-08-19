@@ -13,7 +13,7 @@ function App() {
       toast.info("Loading environment...", { duration: 4000 });
     }
     if (error) {
-      toast.error(error);
+      toast.error(JSON.stringify(error));
     }
     if (done) {
       toast.success("Environment loaded!", { duration: 4000 });
