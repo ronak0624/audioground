@@ -128,10 +128,11 @@ export default function Home() {
       <Table ref={gridRef} cols={colConfig} rows={rows} loading={rowsLoading} />
       {importing && (
         <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center pointer-events-none ">
-          <div className="flex items-center justify-center gap-5 p-5 shadow-lg rounded-lg bg-primary-foreground">
-            <LightweightLoader />
-            <p className="text-sm font-medium">
-              Importing {filesFound} files...
+          <div className="z-50 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none flex gap-5 items-center">
+            <LightweightLoader className="w-12 h-12" />
+            <p className="text-sm font-light">
+              Importing <span className="font-medium">{filesFound}</span>{" "}
+              files...
             </p>
           </div>
         </div>

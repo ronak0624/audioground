@@ -1,14 +1,6 @@
 import { appDataDir } from "@tauri-apps/api/path";
 import { Command } from "@tauri-apps/api/shell";
-import {
-  ROOT,
-  PYTHON,
-  MAIN,
-  PIP,
-  PYRESOURCE,
-  REQUIREMENTS,
-  VENV,
-} from "./paths";
+import { PYTHON, MAIN, PIP, PYRESOURCE, REQUIREMENTS, VENV } from "./paths";
 
 export const create_virtual_environment = async () => {
   const venv = await VENV();
@@ -18,25 +10,24 @@ export const create_virtual_environment = async () => {
 
   const appData = await appDataDir();
 
-  const rsync = `rsync -a "${resources}" "${appData}"`;
-  const venv_cmd = `python3 -m venv "${venv}"`;
-  const pip_cmd = `"${pip}" install -r "${requirements}"`;
-  return [rsync, venv_cmd, pip_cmd].join(" && ");
+  const cmd = [
+    // `rsync -a --filter="P ${venv}" "${resources}" "${appData}"`,
+    `cp -R "${resources}" "${appData}"`,
+    `python3 -m venv "${venv}"`,
+    `"${pip}" install -r "${requirements}"`,
+  ].join(" && ");
+
+  return new Command("sh", ["-c", cmd], { cwd: await appDataDir() });
 };
 
 export const labeler = async (paths: string[]) => {
   const sanitized = paths.map((path) => `'${path.replaceAll("'", "'\\''")}'`);
 
-  const root = await ROOT();
   const python = await PYTHON();
   const main = await MAIN();
 
-  return new Command(
-    "sh",
-    [
-      "-c",
-      `"${python}" "${main}" --paths ${sanitized.join(" ")} & echo "PID:$!"`,
-    ],
-    { cwd: root },
-  );
+  return new Command("sh", [
+    "-c",
+    `"${python}" "${main}" --paths ${sanitized.join(" ")} & echo "PID:$!"`,
+  ]);
 };
