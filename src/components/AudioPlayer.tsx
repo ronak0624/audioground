@@ -27,19 +27,16 @@ const AudioPlayer = () => {
   return (
     <div
       className={twMerge(
-        "w-full px-5 flex items-center bg-transparent rounded-b-xl",
+        "w-full flex -mb-5 items-center bg-transparent rounded-b-xl",
         isHidden,
       )}
     >
       {!isPlaying ? (
-        <Button
-          className="px-2 py-1 rounded-xl shadow-md"
-          onClick={() => play()}
-        >
+        <Button className="p-2 rounded-full shadow-md" onClick={() => play()}>
           <Play className="icon" />
         </Button>
       ) : (
-        <Button className="px-2 py-1 rounded-xl shadow-md" onClick={pause}>
+        <Button className="p-2 rounded-full shadow-md" onClick={pause}>
           <Pause className="icon" />
         </Button>
       )}
