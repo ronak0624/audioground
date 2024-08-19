@@ -13,6 +13,7 @@ type TableContextMenuProps = PropsWithChildren<{
   onCopyPath?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  onPlay?: () => void;
   onMount?: () => void;
   selectedRows: IRowNode<TrackRow>[];
 }>;
@@ -21,7 +22,6 @@ export default function TableContextMenu({
   children,
   onCopyPath,
   onDelete,
-  // onEdit,
   onMount,
   selectedRows,
 }: TableContextMenuProps) {
@@ -35,7 +35,6 @@ export default function TableContextMenu({
           <Copy className="icon pr-1" />
           Copy {count} Path(s)
         </ContextMenuItem>
-        {/* {count <= 1 && <ContextMenuItem onClick={onEdit}>Edit</ContextMenuItem>} */}
         <ContextMenuItem onClick={onDelete}>
           <Trash2 className="icon pr-1" />
           Delete {count} tracks
