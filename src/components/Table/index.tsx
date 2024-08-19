@@ -26,7 +26,12 @@ import {
 } from "react";
 import _, { debounce } from "lodash";
 import { buttonVariants } from "../ui/button";
-import { ChevronsLeftRight, ChevronsRightLeft, FileAudio } from "lucide-react";
+import {
+  ChevronsLeftRight,
+  ChevronsRightLeft,
+  FileAudio,
+  Pencil,
+} from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { TrackRow } from "./rows";
 import Loader from "../Loader";
@@ -46,10 +51,11 @@ export interface TableProps {
 interface TableControlButtonProps extends PropsWithChildren {
   label: string;
   onClick: () => void;
+  className?: string;
 }
 
 const TableControlButton = (props: TableControlButtonProps) => {
-  const { children, ...rest } = props;
+  const { children, className, ...rest } = props;
 
   return (
     <Tooltip>
@@ -58,6 +64,7 @@ const TableControlButton = (props: TableControlButtonProps) => {
           className={twMerge(
             buttonVariants({ variant: "outline" }),
             "p-2 bg-transparent",
+            className,
           )}
           onClick={props.onClick}
         >
@@ -86,6 +93,7 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
 ) {
   const [quickFilterText, setQuickFilterText] = useState<string>("");
   const [selectedRows, setSelectedRows] = useState<IRowNode[]>([]);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const { isDarkMode } = useDarkMode();
   const { play } = useAudio();
   const tableClass = isDarkMode ? `${theme}-dark` : theme;
@@ -119,6 +127,7 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
   );
 
   const handleRowDoubleClicked = async (e: RowDoubleClickedEvent<TrackRow>) => {
+    if (isEditing) return;
     await play(e.data);
   };
 
@@ -144,10 +153,28 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
     api.applyTransaction({ remove: rows });
   };
 
+  const handleIsEditing = () => {
+    if (isEditing) {
+      gridRef.current?.api.stopEditing();
+    }
+    setIsEditing((prev) => !prev);
+  };
+
   return (
     <div className="flex-1 flex flex-col gap-2">
       <div className="flex flex-row items-center w-full gap-2">
         <Search onChange={(e) => debounceQuickFilter(e.target.value)} />
+        <TableControlButton
+          className={
+            isEditing
+              ? "bg-accent-foreground text-accent hover:bg-primary hover:text-primary-foreground"
+              : ""
+          }
+          label="Edit Mode"
+          onClick={handleIsEditing}
+        >
+          <Pencil className="icon" />
+        </TableControlButton>
         <TableControlButton label="Fit Content" onClick={expandColumns}>
           <ChevronsLeftRight className="icon" />
         </TableControlButton>
@@ -172,8 +199,12 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
             loading={loading}
             noRowsOverlayComponent={EmptyState}
             suppressCellFocus
+            suppressClickEdit={!isEditing}
+            singleClickEdit
+            editType="fullRow"
+            undoRedoCellEditing
+            // stopEditingWhenCellsLoseFocus
             onRowDoubleClicked={handleRowDoubleClicked}
-            suppressClickEdit
             quickFilterText={quickFilterText}
             loadingOverlayComponent={Loader}
             getRowId={getRowId}
