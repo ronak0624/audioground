@@ -10,6 +10,7 @@ import { twMerge } from "tailwind-merge";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
+import { type as osType } from "@tauri-apps/api/os";
 
 import "./theme.css";
 import { Search } from "../Search";
@@ -127,7 +128,11 @@ const Table = forwardRef<AgGridReact, TableProps>(function Table(
   );
 
   const handleRowDoubleClicked = async (e: RowDoubleClickedEvent<TrackRow>) => {
-    if (isEditing) return;
+    // Asset protocol can't load audio on Linux. I can disable this once
+    // https://github.com/tauri-apps/tauri/issues/3725 is resolved
+    const isLinux = (await osType()) === "Linux";
+    if (isEditing || isLinux) return;
+
     await play(e.data);
   };
 

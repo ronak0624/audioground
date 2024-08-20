@@ -18,6 +18,9 @@
         "open": true,
         "save": true
       },
+      "os": {
+        "all": true
+      },
       "window": {
         "all": true
       },
