@@ -1,7 +1,7 @@
 import type { CustomCellRendererProps } from "@ag-grid-community/react";
 import { type FunctionComponent, useCallback } from "react";
 
-import { Trash } from "lucide-react";
+import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { deleteTrack } from "@lib/store/tracks";
 
@@ -15,14 +15,12 @@ export const ActionsCellRenderer: FunctionComponent<
   }, [node, api]);
 
   return (
-    <div className="flex flex-row gap-8">
-      <Button
-        className="bg-transparent text-destructive hover:bg-destructive/90"
-        variant="ghost"
-        onClick={onRemoveClick}
-      >
-        <Trash className="icon" />
-      </Button>
-    </div>
+    <Button
+      className="bg-transparent text-destructive hover:bg-destructive/90"
+      variant="ghost"
+      onClick={onRemoveClick}
+    >
+      <XIcon className="icon" />
+    </Button>
   );
 };

@@ -1,6 +1,5 @@
 import { ActionsCellRenderer } from "./renderers/ActionsCellRenderer";
 import { TitleCellRenderer } from "./renderers/TitleCellRenderer";
-import StatusCellRenderer from "./renderers/StatusCellRenderer";
 import MultiTagRenderer from "./renderers/MultiTagRenderer";
 import { ColDef, ValueFormatterFunc } from "@ag-grid-community/core";
 
@@ -15,10 +14,6 @@ const statuses = {
 };
 
 export type TrackStatus = keyof typeof statuses;
-
-const statusFormatter: ValueFormatterFunc = ({ value }) => {
-  return statuses[value as TrackStatus] ?? "";
-};
 
 const tagFormatter: ValueFormatterFunc = ({ value }) => {
   return value.join(", ");
@@ -114,10 +109,10 @@ export const colConfig: ColDef[] = [
     },
   },
   { field: "actions", cellRenderer: ActionsCellRenderer, width: 100 },
-  {
-    field: "status",
-    valueFormatter: statusFormatter,
-    cellRenderer: StatusCellRenderer,
-    width: 75,
-  },
+  // {
+  //   field: "status",
+  //   valueFormatter: statusFormatter,
+  //   cellRenderer: StatusCellRenderer,
+  //   width: 75,
+  // },
 ];

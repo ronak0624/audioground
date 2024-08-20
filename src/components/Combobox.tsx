@@ -45,7 +45,12 @@ export default function Combobox(props: PropsWithChildren<ComboboxProps>) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" role="combobox" aria-expanded={open}>
+        <Button
+          className="w-full text-start"
+          variant="ghost"
+          role="combobox"
+          aria-expanded={open}
+        >
           {children}
         </Button>
       </PopoverTrigger>
@@ -53,7 +58,7 @@ export default function Combobox(props: PropsWithChildren<ComboboxProps>) {
         <Command>
           <CommandInput placeholder={placeholder ?? "Search tag..."} />
           <CommandList>
-            <CommandEmpty className="py-6 text-sm">
+            <CommandEmpty className="pl-4 py-4 text-sm">
               {emptyText ?? "Add new tag."}
             </CommandEmpty>
             <CommandGroup>

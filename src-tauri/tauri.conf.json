@@ -18,6 +18,9 @@
         "open": true,
         "save": true
       },
+      "os": {
+        "all": true
+      },
       "window": {
         "all": true
       },
@@ -82,8 +85,12 @@
       }
     ],
     "security": {
-      "dangerousDisableAssetCspModification": ["style-src"],
-      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: asset: http://asset.localhost blob:; font-src 'self' data: https://fonts.gstatic.com; child-src 'self'"
+      "dangerousDisableAssetCspModification": [
+        "style-src",
+        "connect-src",
+        "media-src"
+      ],
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: asset: http://asset.localhost blob:; font-src 'self' data:; connect-src 'self' data: asset: http://asset.localhost blob:; media-src 'self' asset: http://asset.localhost blob:; child-src 'self'"
     },
     "macOSPrivateApi": true,
     "bundle": {

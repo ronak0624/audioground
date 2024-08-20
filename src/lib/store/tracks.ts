@@ -77,7 +77,15 @@ export async function deleteAllTracks() {
 export async function deleteTrack(key: string) {
   await trackStore.delete(key);
   await deleteThumbnail(key);
-  await trackStore.save();
+  return await trackStore.save();
+}
+
+export async function batchDeleteTracks(keys: string[]) {
+  for (const key of keys) {
+    await trackStore.delete(key);
+    await deleteThumbnail(key);
+  }
+  return await trackStore.save();
 }
 
 // Export the store to json
