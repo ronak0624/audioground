@@ -12,24 +12,91 @@
   "tauri": {
     "allowlist": {
       "all": false,
-      "shell": {
+      "dialog": {
         "all": false,
-        "open": true
+        "confirm": true,
+        "open": true,
+        "save": true
+      },
+      "os": {
+        "all": true
+      },
+      "window": {
+        "all": true
+      },
+      "path": {
+        "all": true
+      },
+      "http": {
+        "all": false,
+        "request": true,
+        "scope": ["http://127.0.0.1:8012/*"]
+      },
+      "fs": {
+        "all": false,
+        "writeFile": true,
+        "scope": ["$RESOURCE/*"]
+      },
+      "protocol": {
+        "all": true,
+        "asset": true,
+        "assetScope": ["**"]
+      },
+      "shell": {
+        "execute": true,
+        "sidecar": true,
+        "scope": [
+          {
+            "name": "python3",
+            "cmd": "python3",
+            "args": true
+          },
+          {
+            "name": "python",
+            "cmd": ".venv/bin/python",
+            "args": true
+          },
+          {
+            "name": "pip",
+            "cmd": ".venv/bin/pip",
+            "args": true
+          },
+          {
+            "name": "sh",
+            "cmd": "sh",
+            "args": true
+          },
+          {
+            "name": "kill",
+            "cmd": "kill",
+            "args": true
+          }
+        ]
       }
     },
     "windows": [
       {
-        "title": "audioground",
-        "width": 800,
-        "height": 600
+        "height": 720,
+        "resizable": true,
+        "decorations": false,
+        "title": "Audioground",
+        "transparent": true,
+        "width": 1280
       }
     ],
     "security": {
-      "csp": null
+      "dangerousDisableAssetCspModification": [
+        "style-src",
+        "connect-src",
+        "media-src"
+      ],
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: asset: http://asset.localhost blob:; font-src 'self' data:; connect-src 'self' data: asset: http://asset.localhost blob:; media-src 'self' asset: http://asset.localhost blob:; child-src 'self'"
     },
+    "macOSPrivateApi": true,
     "bundle": {
       "active": true,
       "targets": "all",
+      "resources": ["python/*.*", "python/models/*.json"],
       "identifier": "com.audioground.dev",
       "icon": [
         "icons/32x32.png",
@@ -37,7 +104,19 @@
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
+      ],
+      "macOS": {
+        "entitlements": null,
+        "exceptionDomain": "",
+        "frameworks": [],
+        "providerShortName": null,
+        "signingIdentity": null
+      },
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
     }
   }
 }

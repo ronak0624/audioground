@@ -1,0 +1,1 @@
+tsc && bun run test && bunx lint-staged
